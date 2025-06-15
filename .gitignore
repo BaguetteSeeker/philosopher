@@ -52,7 +52,7 @@ Mkfile.old
 dkms.conf
 
 # Custom
-minishell
+philosophers
 *.txt
 .vscode/*
 *test*
