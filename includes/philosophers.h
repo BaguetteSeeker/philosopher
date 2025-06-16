@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/11 21:47:23 by epinaud           #+#    #+#             */
-/*   Updated: 2025/06/15 18:29:51 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/06/16 20:29:41 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #define _DEFAULT_SOURCE
 #include "libft.h"
 #include <unistd.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <pthread.h>
 #include <sys/time.h>
@@ -25,6 +26,7 @@ enum e_philo_state
 	EATING,
 	SLEEPING,
 	THINKING,
+	PICKING_FORK,
 	DIED
 };
 
@@ -51,6 +53,7 @@ typedef struct	s_philosopher
 
 typedef struct	s_dinner
 {
+	bool			is_done;
 	size_t			start_time;
 	size_t			guest_count;
 	size_t			life_duration;
@@ -66,7 +69,9 @@ typedef struct	s_dinner
 // 	pthread_mutex_t	mutex;
 // 	t_table_config	table;
 // }	t_dinner;
+void		lst_put(t_philosopher *lst);
 void		put_err(char *msg);
+void		display_state(t_philosopher *philo, size_t action);
 t_dinner	*gset_dinner(void *g);
 void		*print_thread(void *);
 size_t		time_since_start(void);

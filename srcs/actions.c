@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/14 15:19:30 by epinaud           #+#    #+#             */
-/*   Updated: 2025/06/15 18:31:41 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/06/16 20:33:10 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,15 +47,6 @@ void	safe_usleep(int duration_ms, long start_time, t_dinner *dinner)
 	}
 }
 
-void	*print_thread(void *data)
-{
-	t_philosopher	*philo;
-
-	philo = (t_philosopher *)data;
-	printf("Je suis le philo %lu\n", philo->number);
-
-	return (NULL);
-}
 
 // Improved version of sleep function
 int	ft_usleep(size_t milliseconds)
@@ -65,7 +56,7 @@ int	ft_usleep(size_t milliseconds)
 	start = time_since_start();
 	while ((time_since_start() - start) < milliseconds)
 		usleep(100);
-	return (0);
+	exit(0);
 }
 
 void	eat(t_philosopher *guest)
@@ -73,9 +64,13 @@ void	eat(t_philosopher *guest)
 	t_dinner	*table;
 
 	table = gset_dinner(0);
+	if (guest->last_meal + table->life_duration < time_since_start())
+		table->is_done = true;
+	if (table->is_done)
+		exit(0);
 	pthread_mutex_lock(&guest->fork_mutex);
-	// display_state(philo, GOT_FORK);
 	pthread_mutex_lock(&guest->next->fork_mutex);
+	display_state(guest, PICKING_FORK);
 	usleep(table->meal_duration);
 	guest->times_eaten++;
 	guest->last_meal = time_since_start();

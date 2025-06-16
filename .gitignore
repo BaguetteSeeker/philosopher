@@ -57,3 +57,4 @@ philosophers
 .vscode/*
 *test*
 _debug_files
+philo

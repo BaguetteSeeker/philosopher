@@ -10,16 +10,6 @@ t_dinner	*gset_dinner(void *g)
 	return (stored_g);
 }
 
-void	put_err(char *msg)
-{
-	// if (errno)
-	// 	perror(msg);
-	if (msg && *msg)
-		ft_putendl_fd(msg, STDERR_FILENO);
-	// clean_shell();
-	exit(EXIT_FAILURE);
-}
-
 int	set_table(char *args[])
 {
 	size_t	val;
@@ -47,13 +37,6 @@ int	set_table(char *args[])
 	return (1);
 }
 
-void	lst_put(t_philosopher *lst)
-{
-	if (!lst)
-		return (ft_putendl_fd("Node does not exist", 1));
-	ft_printf(" Philo Number [%d]\n", lst->number);
-}
-
 void	init_philo(t_philosopher **head, t_dinner dinner)
 {
 	size_t			i;
@@ -67,12 +50,19 @@ void	init_philo(t_philosopher **head, t_dinner dinner)
 			put_err("Failled to malloc philosopher");
 		*thinker = (t_philosopher){0};
 		thinker->number = i;
-		// if (pthread_mutex_init(&thinker->fork_mutex, NULL) != 0)
-		// 	put_err("Failled to initialize philosopher");
+		if (pthread_mutex_init(&thinker->fork_mutex, NULL) != 0)
+			put_err("Failled to initialize philosopher");
 		ft_lstadd_back((t_list **)head, (t_list *)thinker);
 		i++;
 	}
 	thinker->next = *head;
+	i = 0;
+	while (i++ < dinner.guest_count)
+	{
+		pthread_create(&thinker->thread, NULL, print_thread, thinker);
+		thinker = thinker->next;
+	}
+	printf("Exited philo init\n");
 }
 
 // if (gset_dinner(0)->table.life_duration == 0)
@@ -101,16 +91,17 @@ int	main(int argc, char *argv[])
 	static pthread_t	thread2;
 	
 	init_philo(&thinker, dinner);
-	ft_lstiter((t_list *)thinker, (void (*)(LL_TYP *))lst_put);
-	pthread_create(&thread1, NULL, print_thread, thinker);
-	pthread_create(&thread2, NULL, print_thread, thinker->next);
+	// ft_lstiter((t_list *)thinker, (void (*)(LL_TYP *))lst_put);
+	// pthread_create(&thread2, NULL, print_thread, thinker->next);
+	
 
 	pthread_join(thread1, NULL);
 	pthread_join(thread2, NULL);
+
+	printf("<<The following message should never appear before any philo log\
+>>\nBOTH THREADS HAVE RETURNED\n Main thread unshackled\ns");
     // // Destroy mutexes
     // for (i = 0; i < dinner.guest_count; i++)
-    //     pthread_mutex_destroy(&thinker[i].fork_mutex);
-
 
 	//number_of_philosophers 
 	//time_to_die

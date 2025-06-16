@@ -6,11 +6,11 @@
 #    By: epinaud <marvin@42.fr>                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/25 16:30:14 by epinaud           #+#    #+#              #
-#    Updated: 2025/06/14 15:37:34 by epinaud          ###   ########.fr        #
+#    Updated: 2025/06/16 20:22:30 by epinaud          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-EXE = philosophers
+EXE = philo
 
 CC = cc
 
@@ -24,7 +24,7 @@ LDLIBS = -Llibft -lft -pthread
 
 OBJ_DIR = .obj
 
-SRCS = philosophers.c actions.c
+SRCS = philosophers.c actions.c cleanup.c putlogs.c time.c
 
 $(OBJ_DIR)/%.o : srcs/%.c
 	$(CC) -c $(CFLAGS) $(INCLUDES) $< -o $@
@@ -34,7 +34,7 @@ all: ftbranch libft $(OBJ_DIR) $(EXE)
 $(EXE) :
 	$(CC) $(CFLAGS) $^ -o $@ $(LDLIBS)
 
-philosophers: $(addprefix $(OBJ_DIR)/, $(SRCS:.c=.o))
+philo: $(addprefix $(OBJ_DIR)/, $(SRCS:.c=.o))
 
 libft:
 	@make -C libft
