@@ -6,14 +6,14 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/14 17:01:27 by epinaud           #+#    #+#             */
-/*   Updated: 2025/06/14 17:02:05 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/06/19 22:27:09 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-void	quit_thread(void)
-{
-	//cleanup
-	exit(1);
-}
+// void	quit_thread(void)
+// {
+// 	//cleanup
+// 	exit(1);
+// }

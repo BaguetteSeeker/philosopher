@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   philosophers.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/19 21:25:35 by epinaud           #+#    #+#             */
+/*   Updated: 2025/06/20 00:54:23 by epinaud          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "philosophers.h"
 
@@ -10,33 +21,37 @@ t_dinner	*gset_dinner(void *g)
 	return (stored_g);
 }
 
-int	set_table(char *args[])
+//Deal with atoi 0 return edge case
+int	set_table(int argc, char *args[])
 {
-	size_t	val;
-	size_t	i;
+	size_t		val;
+	size_t		i;
+	t_dinner	*dinner;
 
 	i = 0;
+	dinner = gset_dinner(0);
 	while (args[i])
 	{
 		val = ft_atoi(args[i]);
 		if (ft_strlen(args[i]) != ft_nbrlen(val))
 			put_err("");
 		if (i == 0)
-			gset_dinner(0)->guest_count = val;
+			dinner->guest_count = val;
 		else if (i == 1)
-			gset_dinner(0)->life_duration = val;
+			dinner->life_duration = val;
 		else if (i == 2)
-			gset_dinner(0)->meal_duration = val / 0.001;
+			dinner->meal_duration = val / 0.001;
 		else if (i == 3)
-			gset_dinner(0)->sleep_duration = val / 0.001;
-		else if	(i == 4)
-			gset_dinner(0)->meals_required = val;
+			dinner->sleep_duration = val / 0.001;
+		else if (i == 4)
+			dinner->meals_required = val;
 		i++;
+		dinner->argc = argc;
 	}
 	return (1);
 }
 
-void	init_philo(t_philosopher **head, t_dinner dinner)
+t_philosopher	*create_philos(t_philosopher **head, t_dinner dinner)
 {
 	size_t			i;
 	t_philosopher	*thinker;
@@ -48,24 +63,48 @@ void	init_philo(t_philosopher **head, t_dinner dinner)
 		if (!thinker)
 			put_err("Failled to malloc philosopher");
 		*thinker = (t_philosopher){0};
-		thinker->number = i;
+		thinker->id = i;
 		if (pthread_mutex_init(&thinker->fork_mutex, NULL) != 0)
 			put_err("Failled to initialize philosopher");
 		ft_lstadd_back((t_list **)head, (t_list *)thinker);
 		i++;
 	}
 	thinker->next = *head;
-	thinker = *head;
+	return (*head);
+}
+
+void	launch_philos(t_philosopher *thinker, t_dinner dinner)
+{
+	size_t	i;
+	
+	if (dinner.guest_count == 1)
+	{
+		usleep(dinner.life_duration / 0.001);
+		display_state(thinker, DIED);
+		return ;
+	}
 	i = 0;
-	gset_dinner(0)->start_time = time_since_epoch();
-	printf("Dinner start at %ld\n", gset_dinner(0)->start_time);
 	while (i++ < dinner.guest_count)
 	{
 		thinker->last_meal = gset_dinner(0)->start_time;
 		pthread_create(&thinker->thread, NULL, launch_routine, thinker);
 		thinker = thinker->next;
 	}
-	i = 0;
+}
+
+
+//DEATH 0 ??
+//Thread the standalone philo case
+void	init_philo(t_philosopher **head, t_dinner dinner)
+{
+	size_t			i;
+	t_philosopher	*thinker;
+
+	thinker = create_philos(head, dinner);
+	gset_dinner(0)->start_time = time_since_epoch();
+	// printf("Dinner start at %ld\n Sec since start %ld\n",
+	// 	gset_dinner(0)->start_time, time_since_epoch() - gset_dinner(0)->start_time);
+	launch_philos(*head, dinner);
 	while (i++ < dinner.guest_count)
 	{
 		pthread_join(thinker->thread, NULL);
@@ -74,40 +113,33 @@ void	init_philo(t_philosopher **head, t_dinner dinner)
 	printf("Exited philo init\n");
 }
 
-// if (gset_dinner(0)->table.life_duration == 0)
-// 	return (death_zero(&dinner), free_dinner(), 0);
-// if (gset_dinner(0)->guest_count == 1)
-// 	return (philo_one(&dinner), free_dinner(), 0);
-// else
-// 	coordinate_dinner(&dinner);
+void	cleanup_philos(t_dinner	*dinner, t_philosopher *philos)
+{
+	size_t			i;
+	t_philosopher	*next_philo;
+
+	i = 0;
+	while (i++ < dinner->guest_count)
+	{
+		next_philo = philos->next;
+		pthread_mutex_destroy(&philos->fork_mutex);
+		free(philos);
+		philos = next_philo;
+	}
+}
+
 int	main(int argc, char *argv[])
 {
 	t_dinner		dinner;
-	// pthread_t		thread1;
-	// pthread_t		thread2;
 
 	dinner = (t_dinner){0};
 	gset_dinner(&dinner);
 	if (argc < 5)
 		put_err("Insufficient argument count");
-	set_table(&argv[1]);
-
-	t_philosopher	*thinker;
-
-	thinker = NULL;
-	printf("There is %ld philosophers around the table\n", dinner.guest_count);	
-	init_philo(&thinker, dinner);
-	// ft_lstiter((t_list *)thinker, (void (*)(LL_TYP *))lst_put);
-	// pthread_create(&thread2, NULL, print_thread, thinker->next);
+	set_table(argc, &argv[1]);
+	printf("There is %ld philosophers around the table\n", dinner.guest_count);
+	init_philo(&dinner.philos, dinner);
 	printf("<<The following message should never appear before any philo log\
->>\nBOTH THREADS HAVE RETURNED\n Main thread unshackled\ns");
-    // // Destroy mutexes
-    // for (i = 0; i < dinner.guest_count; i++)
-
-	//number_of_philosophers 
-	//time_to_die
-	// time_to_eat
-	// time_to_sleep
-	//[number_of_times_each_philosopher_must_eat]
-
+>>\nBOTH THREADS HAVE RETURNED\n Main thread unshackled\n");
+	cleanup_philos(&dinner, dinner.philos);
 }
