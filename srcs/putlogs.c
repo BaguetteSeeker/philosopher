@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/15 18:37:41 by epinaud           #+#    #+#             */
-/*   Updated: 2025/06/16 20:18:47 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/06/18 18:38:24 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ void	*print_thread(void *data)
 
 	philo = (t_philosopher *)data;
 	printf("Je suis le philo %lu\n", philo->number);
-
+	eat(philo);
 	return (NULL);
 }
 
@@ -50,5 +50,5 @@ void	display_state(t_philosopher *philo, size_t action)
 	else if (action == DIED)
 		printf("Philosopher number %ld has DIED\n", philo->number);
 	else
-		printf("Philosopher number %ld , has taken its forks", philo->number);
+		printf("Philosopher number %ld, has taken its forks\n", philo->number);
 }

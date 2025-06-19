@@ -26,14 +26,13 @@ int	set_table(char *args[])
 		else if (i == 1)
 			gset_dinner(0)->life_duration = val;
 		else if (i == 2)
-			gset_dinner(0)->meal_duration = val;
+			gset_dinner(0)->meal_duration = val / 0.001;
 		else if (i == 3)
-			gset_dinner(0)->sleep_duration = val;
+			gset_dinner(0)->sleep_duration = val / 0.001;
 		else if	(i == 4)
 			gset_dinner(0)->meals_required = val;
 		i++;
 	}
-	gset_dinner(0)->start_time = time_since_epoch();
 	return (1);
 }
 
@@ -56,10 +55,20 @@ void	init_philo(t_philosopher **head, t_dinner dinner)
 		i++;
 	}
 	thinker->next = *head;
+	thinker = *head;
+	i = 0;
+	gset_dinner(0)->start_time = time_since_epoch();
+	printf("Dinner start at %ld\n", gset_dinner(0)->start_time);
+	while (i++ < dinner.guest_count)
+	{
+		thinker->last_meal = gset_dinner(0)->start_time;
+		pthread_create(&thinker->thread, NULL, launch_routine, thinker);
+		thinker = thinker->next;
+	}
 	i = 0;
 	while (i++ < dinner.guest_count)
 	{
-		pthread_create(&thinker->thread, NULL, print_thread, thinker);
+		pthread_join(thinker->thread, NULL);
 		thinker = thinker->next;
 	}
 	printf("Exited philo init\n");
@@ -86,18 +95,10 @@ int	main(int argc, char *argv[])
 	t_philosopher	*thinker;
 
 	thinker = NULL;
-	printf("There is %ld philosophers around the table\n", dinner.guest_count);
-	static pthread_t	thread1;
-	static pthread_t	thread2;
-	
+	printf("There is %ld philosophers around the table\n", dinner.guest_count);	
 	init_philo(&thinker, dinner);
 	// ft_lstiter((t_list *)thinker, (void (*)(LL_TYP *))lst_put);
 	// pthread_create(&thread2, NULL, print_thread, thinker->next);
-	
-
-	pthread_join(thread1, NULL);
-	pthread_join(thread2, NULL);
-
 	printf("<<The following message should never appear before any philo log\
 >>\nBOTH THREADS HAVE RETURNED\n Main thread unshackled\ns");
     // // Destroy mutexes

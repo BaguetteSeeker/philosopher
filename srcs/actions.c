@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/14 15:19:30 by epinaud           #+#    #+#             */
-/*   Updated: 2025/06/16 20:33:10 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/06/19 20:49:00 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,6 @@ void	safe_usleep(int duration_ms, long start_time, t_dinner *dinner)
 	}
 }
 
-
 // Improved version of sleep function
 int	ft_usleep(size_t milliseconds)
 {
@@ -64,16 +63,38 @@ void	eat(t_philosopher *guest)
 	t_dinner	*table;
 
 	table = gset_dinner(0);
-	if (guest->last_meal + table->life_duration < time_since_start())
+	if (time_since_epoch() - guest->last_meal > table->life_duration)
+	{
+		display_state(guest, DIED);
 		table->is_done = true;
-	if (table->is_done)
-		exit(0);
+		return ;
+	}
 	pthread_mutex_lock(&guest->fork_mutex);
 	pthread_mutex_lock(&guest->next->fork_mutex);
 	display_state(guest, PICKING_FORK);
 	usleep(table->meal_duration);
 	guest->times_eaten++;
-	guest->last_meal = time_since_start();
+	guest->last_meal = time_since_epoch();
 	pthread_mutex_unlock(&guest->fork_mutex);
 	pthread_mutex_unlock(&guest->next->fork_mutex);
+}
+
+void	*launch_routine(void *v_philo)
+{
+	t_philosopher	*philo;
+	t_dinner	*table;
+
+	table = gset_dinner(0);
+	philo = (t_philosopher *)v_philo;
+	printf("Je suis le philo %lu\n", philo->number);
+	while (!table->is_done)
+	{
+		eat(philo);
+		if (table->is_done)
+			break ;
+		display_state(philo, SLEEPING);
+		usleep(table->sleep_duration);
+		display_state(philo, THINKING);
+	}
+	return (exit(0), NULL);
 }

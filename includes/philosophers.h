@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/11 21:47:23 by epinaud           #+#    #+#             */
-/*   Updated: 2025/06/16 20:29:41 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/06/18 18:55:07 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,6 @@ typedef struct	s_philosopher
 	size_t			number;
 	pthread_t		thread;
 	pthread_mutex_t	fork_mutex;
-	// t_cycle_counter	counter;/
 	size_t			last_meal;
 	size_t			meals_required;
 	size_t			times_eaten;
@@ -54,13 +53,13 @@ typedef struct	s_philosopher
 typedef struct	s_dinner
 {
 	bool			is_done;
+	pthread_mutex_t	coordinator;
 	size_t			start_time;
 	size_t			guest_count;
 	size_t			life_duration;
 	size_t			meal_duration;
 	size_t			sleep_duration;
 	size_t			meals_required;
-	// t_fork			*forks;
 	t_philosopher	*philos;
 }	t_dinner;
 
@@ -76,4 +75,6 @@ t_dinner	*gset_dinner(void *g);
 void		*print_thread(void *);
 size_t		time_since_start(void);
 size_t		time_since_epoch(void);
+void		eat(t_philosopher *guest);
+void		*launch_routine(void *v_philo);
 #endif
