@@ -6,46 +6,56 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/14 15:19:30 by epinaud           #+#    #+#             */
-/*   Updated: 2025/06/20 00:46:41 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/06/22 00:31:23 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-void	eat(t_philosopher *guest)
+void	*dine_alone(void *philo)
+{
+	usleep(gset_dinner(0)->life_duration / 0.001);
+	display_state((t_guest *)philo, DIED);
+	return (NULL);
+}
+
+size_t	eat(t_guest *philo)
 {
 	t_dinner	*table;
 
 	table = gset_dinner(0);
-	if (time_since_epoch() - guest->last_meal > table->life_duration)
+	if (table->life_duration == 0 || table->is_done
+		|| time_since_epoch() - philo->last_meal > table->life_duration)
 	{
-		display_state(guest, DIED);
 		table->is_done = true;
-		return ;
+		display_state(philo, DIED);
+		return (0);
 	}
-	pthread_mutex_lock(&guest->fork_mutex);
-	pthread_mutex_lock(&guest->next->fork_mutex);
-	display_state(guest, PICKING_FORK);
+	pthread_mutex_lock(&philo->fork_mutex);
+	pthread_mutex_lock(&philo->next->fork_mutex);
+	display_state(philo, PICKING_FORK);
 	usleep(table->meal_duration);
-	guest->times_eaten++;
-	guest->last_meal = time_since_epoch();
-	pthread_mutex_unlock(&guest->fork_mutex);
-	pthread_mutex_unlock(&guest->next->fork_mutex);
+	philo->times_eaten++;
+	philo->last_meal = time_since_epoch();
+	pthread_mutex_unlock(&philo->fork_mutex);
+	pthread_mutex_unlock(&philo->next->fork_mutex);
+	return (1);
 }
 
-void	*launch_routine(void *v_philo)
+void	*launch_dinner(void *v_philo)
 {
-	t_philosopher	*philo;
+	t_guest	*philo;
 	t_dinner		*table;
 
 	table = gset_dinner(0);
-	philo = (t_philosopher *)v_philo;
+	philo = (t_guest *)v_philo;
 	while (!table->is_done)
 	{
 		if (table->argc == MAX_ARGS
 			&& philo->times_eaten >= table->meals_required)
 			break ;
-		eat(philo);
+		if (!eat(philo))
+			break ;
 		display_state(philo, SLEEPING);
 		usleep(table->sleep_duration);
 		display_state(philo, THINKING);

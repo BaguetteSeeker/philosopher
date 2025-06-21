@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/11 21:47:23 by epinaud           #+#    #+#             */
-/*   Updated: 2025/06/20 00:46:01 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/06/22 00:50:37 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,10 @@
 # define PHILOSOPHERS_H
 
 # define _DEFAULT_SOURCE
-# include "libft.h"
 # include <unistd.h>
 # include <stdbool.h>
 # include <stdio.h>
+# include <stdlib.h>
 # include <pthread.h>
 # include <sys/time.h>
 
@@ -48,7 +48,7 @@ typedef struct s_philosopher
 	pthread_mutex_t			fork_mutex;
 	size_t					last_meal;
 	size_t					times_eaten;
-}	t_philosopher;
+}	t_guest;
 
 typedef struct s_dinner
 {
@@ -61,16 +61,25 @@ typedef struct s_dinner
 	size_t			sleep_duration;
 	size_t			meals_required;
 	int				argc;
-	t_philosopher	*philos;
+	t_guest	*philos;
 }	t_dinner;
 
-void		lst_put(t_philosopher *lst);
+void		lst_put(t_guest *lst);
 void		put_err(char *msg);
-void		display_state(t_philosopher *philo, size_t action);
+void		display_state(t_guest *philo, size_t action);
 t_dinner	*gset_dinner(void *g);
 void		*print_thread(void *data);
 size_t		time_since_start(void);
 size_t		time_since_epoch(void);
-void		eat(t_philosopher *guest);
-void		*launch_routine(void *v_philo);
+size_t		eat(t_guest *guest);
+void		*launch_dinner(void *v_philo);
+void		*dine_alone(void *philo);
+
+//Utils
+void		ft_putstr_fd(char *s, int fd);
+int			ft_isdigit(int c);
+int			ft_atoi(const char *nptr);
+t_guest		*ft_lstlast(t_guest *lst);
+void		ft_lstadd_back(t_guest **lst, t_guest *new);
+char		*ft_strchr(const char *s, int c);
 #endif

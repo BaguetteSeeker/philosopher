@@ -6,35 +6,28 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 21:25:35 by epinaud           #+#    #+#             */
-/*   Updated: 2025/06/20 00:54:23 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/06/22 01:00:35 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-t_dinner	*gset_dinner(void *g)
-{
-	static t_dinner	*stored_g = {NULL};
-
-	if (!stored_g)
-		stored_g = g;
-	return (stored_g);
-}
-
 //Deal with atoi 0 return edge case
 int	set_table(int argc, char *args[])
 {
-	size_t		val;
-	size_t		i;
-	t_dinner	*dinner;
+	size_t				val;
+	static size_t		i = 0;
+	static size_t		j = 0;
+	t_dinner			*dinner;
 
-	i = 0;
 	dinner = gset_dinner(0);
 	while (args[i])
 	{
 		val = ft_atoi(args[i]);
-		if (ft_strlen(args[i]) != ft_nbrlen(val))
-			put_err("");
+		j = 0;
+		while (args[i][j])
+			if (!ft_isdigit(args[i][j++]))
+				put_err("Given parameter is not a number");
 		if (i == 0)
 			dinner->guest_count = val;
 		else if (i == 1)
@@ -48,62 +41,57 @@ int	set_table(int argc, char *args[])
 		i++;
 		dinner->argc = argc;
 	}
+	pthread_mutex_init(&dinner->coordinator, NULL);
 	return (1);
 }
 
-t_philosopher	*create_philos(t_philosopher **head, t_dinner dinner)
+t_guest	*create_philos(t_guest **head, t_dinner dinner)
 {
 	size_t			i;
-	t_philosopher	*thinker;
+	t_guest	*thinker;
 
 	i = 1;
 	while (i < dinner.guest_count + 1)
 	{
-		thinker = malloc(sizeof(t_philosopher));
+		thinker = malloc(sizeof(t_guest));
 		if (!thinker)
 			put_err("Failled to malloc philosopher");
-		*thinker = (t_philosopher){0};
+		*thinker = (t_guest){0};
 		thinker->id = i;
 		if (pthread_mutex_init(&thinker->fork_mutex, NULL) != 0)
 			put_err("Failled to initialize philosopher");
-		ft_lstadd_back((t_list **)head, (t_list *)thinker);
+		ft_lstadd_back(head, thinker);
 		i++;
 	}
 	thinker->next = *head;
 	return (*head);
 }
 
-void	launch_philos(t_philosopher *thinker, t_dinner dinner)
+void	launch_philos(t_guest *thinker, t_dinner dinner)
 {
 	size_t	i;
-	
+
 	if (dinner.guest_count == 1)
 	{
-		usleep(dinner.life_duration / 0.001);
-		display_state(thinker, DIED);
+		pthread_create(&thinker->thread, NULL, dine_alone, thinker);
 		return ;
 	}
 	i = 0;
 	while (i++ < dinner.guest_count)
 	{
 		thinker->last_meal = gset_dinner(0)->start_time;
-		pthread_create(&thinker->thread, NULL, launch_routine, thinker);
+		pthread_create(&thinker->thread, NULL, launch_dinner, thinker);
 		thinker = thinker->next;
 	}
 }
 
-
-//DEATH 0 ??
-//Thread the standalone philo case
-void	init_philo(t_philosopher **head, t_dinner dinner)
+void	init_philo(t_guest **head, t_dinner dinner)
 {
 	size_t			i;
-	t_philosopher	*thinker;
+	t_guest	*thinker;
 
 	thinker = create_philos(head, dinner);
 	gset_dinner(0)->start_time = time_since_epoch();
-	// printf("Dinner start at %ld\n Sec since start %ld\n",
-	// 	gset_dinner(0)->start_time, time_since_epoch() - gset_dinner(0)->start_time);
 	launch_philos(*head, dinner);
 	while (i++ < dinner.guest_count)
 	{
@@ -113,10 +101,10 @@ void	init_philo(t_philosopher **head, t_dinner dinner)
 	printf("Exited philo init\n");
 }
 
-void	cleanup_philos(t_dinner	*dinner, t_philosopher *philos)
+void	cleanup_table(t_dinner	*dinner, t_guest *philos)
 {
 	size_t			i;
-	t_philosopher	*next_philo;
+	t_guest	*next_philo;
 
 	i = 0;
 	while (i++ < dinner->guest_count)
@@ -141,5 +129,6 @@ int	main(int argc, char *argv[])
 	init_philo(&dinner.philos, dinner);
 	printf("<<The following message should never appear before any philo log\
 >>\nBOTH THREADS HAVE RETURNED\n Main thread unshackled\n");
-	cleanup_philos(&dinner, dinner.philos);
+	pthread_mutex_destroy(&gset_dinner(0)->coordinator);
+	cleanup_table(&dinner, dinner.philos);
 }
