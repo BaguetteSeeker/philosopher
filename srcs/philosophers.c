@@ -6,43 +6,19 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 21:25:35 by epinaud           #+#    #+#             */
-/*   Updated: 2025/06/22 01:00:35 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/06/24 10:15:38 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-//Deal with atoi 0 return edge case
-int	set_table(int argc, char *args[])
+t_dinner	*gset_dinner(void *g)
 {
-	size_t				val;
-	static size_t		i = 0;
-	static size_t		j = 0;
-	t_dinner			*dinner;
+	static t_dinner	*stored_g = {NULL};
 
-	dinner = gset_dinner(0);
-	while (args[i])
-	{
-		val = ft_atoi(args[i]);
-		j = 0;
-		while (args[i][j])
-			if (!ft_isdigit(args[i][j++]))
-				put_err("Given parameter is not a number");
-		if (i == 0)
-			dinner->guest_count = val;
-		else if (i == 1)
-			dinner->life_duration = val;
-		else if (i == 2)
-			dinner->meal_duration = val / 0.001;
-		else if (i == 3)
-			dinner->sleep_duration = val / 0.001;
-		else if (i == 4)
-			dinner->meals_required = val;
-		i++;
-		dinner->argc = argc;
-	}
-	pthread_mutex_init(&dinner->coordinator, NULL);
-	return (1);
+	if (!stored_g)
+		stored_g = g;
+	return (stored_g);
 }
 
 t_guest	*create_philos(t_guest **head, t_dinner dinner)
@@ -67,24 +43,6 @@ t_guest	*create_philos(t_guest **head, t_dinner dinner)
 	return (*head);
 }
 
-void	launch_philos(t_guest *thinker, t_dinner dinner)
-{
-	size_t	i;
-
-	if (dinner.guest_count == 1)
-	{
-		pthread_create(&thinker->thread, NULL, dine_alone, thinker);
-		return ;
-	}
-	i = 0;
-	while (i++ < dinner.guest_count)
-	{
-		thinker->last_meal = gset_dinner(0)->start_time;
-		pthread_create(&thinker->thread, NULL, launch_dinner, thinker);
-		thinker = thinker->next;
-	}
-}
-
 void	init_philo(t_guest **head, t_dinner dinner)
 {
 	size_t			i;
@@ -92,27 +50,11 @@ void	init_philo(t_guest **head, t_dinner dinner)
 
 	thinker = create_philos(head, dinner);
 	gset_dinner(0)->start_time = time_since_epoch();
-	launch_philos(*head, dinner);
+	launch_dinner(*head, dinner);
 	while (i++ < dinner.guest_count)
 	{
 		pthread_join(thinker->thread, NULL);
 		thinker = thinker->next;
-	}
-	printf("Exited philo init\n");
-}
-
-void	cleanup_table(t_dinner	*dinner, t_guest *philos)
-{
-	size_t			i;
-	t_guest	*next_philo;
-
-	i = 0;
-	while (i++ < dinner->guest_count)
-	{
-		next_philo = philos->next;
-		pthread_mutex_destroy(&philos->fork_mutex);
-		free(philos);
-		philos = next_philo;
 	}
 }
 

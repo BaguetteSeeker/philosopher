@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/11 21:47:23 by epinaud           #+#    #+#             */
-/*   Updated: 2025/06/22 00:50:37 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/06/24 10:21:38 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,18 +64,20 @@ typedef struct s_dinner
 	t_guest	*philos;
 }	t_dinner;
 
-void		lst_put(t_guest *lst);
-void		put_err(char *msg);
+void		launch_dinner(t_guest *thinker, t_dinner dinner);
+void		*dine_alone(void *philo);
+void		*launch_routine(void *v_philo);
+int			set_table(int argc, char *args[]);
+void		cleanup_table(t_dinner	*dinner, t_guest *philos);
 void		display_state(t_guest *philo, size_t action);
+size_t		eat(t_guest *guest);
 t_dinner	*gset_dinner(void *g);
-void		*print_thread(void *data);
 size_t		time_since_start(void);
 size_t		time_since_epoch(void);
-size_t		eat(t_guest *guest);
-void		*launch_dinner(void *v_philo);
-void		*dine_alone(void *philo);
 
 //Utils
+void		put_err(char *msg);
+void		lst_put(t_guest *lst);
 void		ft_putstr_fd(char *s, int fd);
 int			ft_isdigit(int c);
 int			ft_atoi(const char *nptr);

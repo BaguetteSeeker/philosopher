@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/14 15:19:30 by epinaud           #+#    #+#             */
-/*   Updated: 2025/06/22 00:31:23 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/06/24 10:25:17 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,22 @@ void	*dine_alone(void *philo)
 	display_state((t_guest *)philo, DIED);
 	return (NULL);
 }
+
+// void	assign_forks(pthread_t *left_fork, pthread_t *right_fork)
+// {
+	
+// 	// if (&philo->fork_mutex < &philo->next->fork_mutex)
+// 	// {
+// 	// 	pthread_mutex_lock(&philo->fork_mutex);
+// 	// 	pthread_mutex_lock(&philo->next->fork_mutex);
+// 	// }
+// 	// else
+// 	// {
+// 	// 	pthread_mutex_lock(&philo->next->fork_mutex);
+// 	// 	pthread_mutex_lock(&philo->fork_mutex);
+// 	// }
+	
+// }
 
 size_t	eat(t_guest *philo)
 {
@@ -31,8 +47,18 @@ size_t	eat(t_guest *philo)
 		display_state(philo, DIED);
 		return (0);
 	}
-	pthread_mutex_lock(&philo->fork_mutex);
-	pthread_mutex_lock(&philo->next->fork_mutex);
+	if (&philo->fork_mutex < &philo->next->fork_mutex)
+	{
+		pthread_mutex_lock(&philo->fork_mutex);
+		pthread_mutex_lock(&philo->next->fork_mutex);
+	}
+	else
+	{
+		pthread_mutex_lock(&philo->next->fork_mutex);
+		pthread_mutex_lock(&philo->fork_mutex);
+	}
+	// pthread_mutex_lock(&philo->fork_mutex);
+	// pthread_mutex_lock(&philo->next->fork_mutex);
 	display_state(philo, PICKING_FORK);
 	usleep(table->meal_duration);
 	philo->times_eaten++;
@@ -42,9 +68,9 @@ size_t	eat(t_guest *philo)
 	return (1);
 }
 
-void	*launch_dinner(void *v_philo)
+void	*launch_routine(void *v_philo)
 {
-	t_guest	*philo;
+	t_guest			*philo;
 	t_dinner		*table;
 
 	table = gset_dinner(0);

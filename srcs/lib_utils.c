@@ -6,20 +6,11 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/14 17:01:27 by epinaud           #+#    #+#             */
-/*   Updated: 2025/06/22 00:39:55 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/06/24 10:15:04 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
-
-t_dinner	*gset_dinner(void *g)
-{
-	static t_dinner	*stored_g = {NULL};
-
-	if (!stored_g)
-		stored_g = g;
-	return (stored_g);
-}
 
 int	ft_isdigit(int c)
 {
