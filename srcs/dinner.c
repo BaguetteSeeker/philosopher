@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 10:01:54 by epinaud           #+#    #+#             */
-/*   Updated: 2025/06/25 18:43:54 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/06/25 19:28:44 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,6 @@ int	set_table(int argc, char *args[])
 		i++;
 		dinner->argc = argc;
 	}
-	pthread_mutex_init(&dinner->coordinator, NULL);
 	return (1);
 }
 
