@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/14 15:19:30 by epinaud           #+#    #+#             */
-/*   Updated: 2025/06/24 10:25:17 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/06/25 18:54:57 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,22 +18,6 @@ void	*dine_alone(void *philo)
 	display_state((t_guest *)philo, DIED);
 	return (NULL);
 }
-
-// void	assign_forks(pthread_t *left_fork, pthread_t *right_fork)
-// {
-	
-// 	// if (&philo->fork_mutex < &philo->next->fork_mutex)
-// 	// {
-// 	// 	pthread_mutex_lock(&philo->fork_mutex);
-// 	// 	pthread_mutex_lock(&philo->next->fork_mutex);
-// 	// }
-// 	// else
-// 	// {
-// 	// 	pthread_mutex_lock(&philo->next->fork_mutex);
-// 	// 	pthread_mutex_lock(&philo->fork_mutex);
-// 	// }
-	
-// }
 
 size_t	eat(t_guest *philo)
 {

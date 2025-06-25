@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/11 21:47:23 by epinaud           #+#    #+#             */
-/*   Updated: 2025/06/24 10:21:38 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/06/25 18:45:41 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,10 +39,10 @@ typedef struct s_cycle_counter
 	size_t			sleep;
 }	t_cycle_counter;
 
-typedef struct s_philosopher
+typedef struct s_guest
 {
 	void					*ptr;
-	struct s_philosopher	*next;
+	struct s_guest			*next;
 	size_t					id;
 	pthread_t				thread;
 	pthread_mutex_t			fork_mutex;

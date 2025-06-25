@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 21:25:35 by epinaud           #+#    #+#             */
-/*   Updated: 2025/06/24 10:15:38 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/06/25 18:56:33 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,8 @@ t_dinner	*gset_dinner(void *g)
 
 t_guest	*create_philos(t_guest **head, t_dinner dinner)
 {
+	t_guest			*thinker;
 	size_t			i;
-	t_guest	*thinker;
 
 	i = 1;
 	while (i < dinner.guest_count + 1)
@@ -45,12 +45,13 @@ t_guest	*create_philos(t_guest **head, t_dinner dinner)
 
 void	init_philo(t_guest **head, t_dinner dinner)
 {
+	t_guest			*thinker;
 	size_t			i;
-	t_guest	*thinker;
 
 	thinker = create_philos(head, dinner);
 	gset_dinner(0)->start_time = time_since_epoch();
 	launch_dinner(*head, dinner);
+	i = 0;
 	while (i++ < dinner.guest_count)
 	{
 		pthread_join(thinker->thread, NULL);
@@ -69,8 +70,8 @@ int	main(int argc, char *argv[])
 	set_table(argc, &argv[1]);
 	printf("There is %ld philosophers around the table\n", dinner.guest_count);
 	init_philo(&dinner.philos, dinner);
-	printf("<<The following message should never appear before any philo log\
->>\nBOTH THREADS HAVE RETURNED\n Main thread unshackled\n");
-	pthread_mutex_destroy(&gset_dinner(0)->coordinator);
+	/* printf("<<The following message should never appear before any philo log\
+>>\nBOTH THREADS HAVE RETURNED\n Main thread unshackled\n"); */
 	cleanup_table(&dinner, dinner.philos);
+	pthread_mutex_destroy(&gset_dinner(0)->coordinator);
 }

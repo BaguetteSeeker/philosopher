@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 10:01:54 by epinaud           #+#    #+#             */
-/*   Updated: 2025/06/24 10:10:29 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/06/25 18:43:54 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@ void	launch_dinner(t_guest *thinker, t_dinner dinner)
 {
 	size_t	i;
 
+	if (pthread_mutex_init(&dinner.coordinator, NULL) != 0)
+		put_err("Failled to initialize philosopher");
 	if (dinner.guest_count == 1)
 	{
 		pthread_create(&thinker->thread, NULL, dine_alone, thinker);
@@ -42,8 +44,8 @@ int	set_table(int argc, char *args[])
 	{
 		j = 0;
 		while (args[i][j])
-		if (!ft_isdigit(args[i][j++]))
-			put_err("Given parameter is not a number");
+			if (!ft_isdigit(args[i][j++]))
+				put_err("Given parameter is not a number");
 		val = ft_atoi(args[i]);
 		if (i == 0)
 			dinner->guest_count = val;
@@ -64,8 +66,8 @@ int	set_table(int argc, char *args[])
 
 void	cleanup_table(t_dinner	*dinner, t_guest *philos)
 {
+	t_guest			*next_philo;
 	size_t			i;
-	t_guest	*next_philo;
 
 	i = 0;
 	while (i++ < dinner->guest_count)
