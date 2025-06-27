@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/15 18:37:41 by epinaud           #+#    #+#             */
-/*   Updated: 2025/06/25 18:57:34 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/06/25 21:18:29 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,15 +41,14 @@ void	display_state(t_guest *philo, size_t action)
 {
 	pthread_mutex_lock(&gset_dinner(0)->coordinator);
 	if (action == EATING)
-		printf("%ld philo %ld is eating\n", time_since_start(), philo->id);
+		printf("%ld %ld is eating\n", time_since_start(), philo->id);
 	else if (action == THINKING)
-		printf("%ld philo %ld is thinking\n", time_since_start(), philo->id);
+		printf("%ld %ld is thinking\n", time_since_start(), philo->id);
 	else if (action == SLEEPING)
-		printf("%ld philo %ld is sleeping\n", time_since_start(), philo->id);
+		printf("%ld %ld is sleeping\n", time_since_start(), philo->id);
 	else if (action == DIED)
-		printf("%ld philo %ld has DIED\n", time_since_start(), philo->id);
+		printf("\033[31m%ld %ld died\033[0m\n", time_since_start(), philo->id);
 	else
-		printf("%ld philo %ld, lifted its forks\n",
-			time_since_start(), philo->id);
+		printf("%ld %ld, has taken a fork\n", time_since_start(), philo->id);
 	pthread_mutex_unlock(&gset_dinner(0)->coordinator);
 }

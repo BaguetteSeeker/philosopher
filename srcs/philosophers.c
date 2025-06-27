@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 21:25:35 by epinaud           #+#    #+#             */
-/*   Updated: 2025/06/25 18:56:33 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/06/25 20:02:06 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ t_guest	*create_philos(t_guest **head, t_dinner dinner)
 		*thinker = (t_guest){0};
 		thinker->id = i;
 		if (pthread_mutex_init(&thinker->fork_mutex, NULL) != 0)
-			put_err("Failled to initialize philosopher");
+			put_err("Failled to initialize mutex");
 		ft_lstadd_back(head, thinker);
 		i++;
 	}

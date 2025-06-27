@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 21:18:47 by epinaud           #+#    #+#             */
-/*   Updated: 2025/06/19 21:19:44 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/06/27 09:27:12 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,10 +50,21 @@ void	safe_usleep(int duration_ms, long start_time, t_dinner *dinner)
 // Improved version of sleep function
 int	ft_usleep(size_t milliseconds)
 {
-	size_t	start;
+	t_dinner	*dinner;
+	size_t		start;
 
+	dinner = gset_dinner(0);
 	start = time_since_start();
 	while ((time_since_start() - start) < milliseconds)
+	{
+		pthread_mutex_lock(&dinner->coordinator);
+		if (dinner->is_done)
+		{
+			pthread_mutex_unlock(&dinner->coordinator);
+			break;
+		}
+		pthread_mutex_unlock(&dinner->coordinator);
 		usleep(100);
+	}
 	exit(0);
 }

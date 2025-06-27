@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/14 15:19:30 by epinaud           #+#    #+#             */
-/*   Updated: 2025/06/25 19:47:41 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/06/25 21:20:04 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,24 @@ void	*dine_alone(void *philo)
 	usleep(gset_dinner(0)->life_duration / 0.001);
 	display_state((t_guest *)philo, DIED);
 	return (NULL);
+}
+
+void	lift_forks(t_guest *philo)
+{
+	if (&philo->fork_mutex < &philo->next->fork_mutex)
+	{
+		pthread_mutex_lock(&philo->fork_mutex);
+		display_state(philo, PICKING_FORK);
+		pthread_mutex_lock(&philo->next->fork_mutex);
+		display_state(philo, PICKING_FORK);
+	}
+	else
+	{
+		pthread_mutex_lock(&philo->next->fork_mutex);
+		display_state(philo, PICKING_FORK);
+		pthread_mutex_lock(&philo->fork_mutex);
+		display_state(philo, PICKING_FORK);
+	}
 }
 
 size_t	eat(t_guest *philo)
@@ -33,19 +51,8 @@ size_t	eat(t_guest *philo)
 		display_state(philo, DIED);
 		return (0);
 	}
-	if (&philo->fork_mutex < &philo->next->fork_mutex)
-	{
-		pthread_mutex_lock(&philo->fork_mutex);
-		pthread_mutex_lock(&philo->next->fork_mutex);
-	}
-	else
-	{
-		pthread_mutex_lock(&philo->next->fork_mutex);
-		pthread_mutex_lock(&philo->fork_mutex);
-	}
-	// pthread_mutex_lock(&philo->fork_mutex);
-	// pthread_mutex_lock(&philo->next->fork_mutex);
-	display_state(philo, PICKING_FORK);
+	lift_forks(philo);
+	display_state(philo, EATING);
 	usleep(table->meal_duration);
 	philo->times_eaten++;
 	philo->last_meal = time_since_epoch();

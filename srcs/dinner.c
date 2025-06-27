@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 10:01:54 by epinaud           #+#    #+#             */
-/*   Updated: 2025/06/25 19:28:44 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/06/25 20:01:52 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void	launch_dinner(t_guest *thinker, t_dinner dinner)
 	size_t	i;
 
 	if (pthread_mutex_init(&dinner.coordinator, NULL) != 0)
-		put_err("Failled to initialize philosopher");
+		put_err("Failled to initialize mutex");
 	if (dinner.guest_count == 1)
 	{
 		pthread_create(&thinker->thread, NULL, dine_alone, thinker);
