@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/11 21:47:23 by epinaud           #+#    #+#             */
-/*   Updated: 2025/06/27 09:10:16 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/06/27 10:48:43 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ typedef struct s_guest
 typedef struct s_dinner
 {
 	bool			is_done;
+	pthread_mutex_t	display_lock;
 	pthread_mutex_t	coordinator;
 	size_t			start_time;
 	size_t			guest_count;
@@ -72,8 +73,10 @@ void		cleanup_table(t_dinner	*dinner, t_guest *philos);
 void		display_state(t_guest *philo, size_t action);
 size_t		eat(t_guest *guest);
 t_dinner	*gset_dinner(void *g);
+size_t		is_dinner_done(void);
 size_t		time_since_start(void);
 size_t		time_since_epoch(void);
+void		ft_usleep(size_t milliseconds);
 
 //Utils
 void		put_err(char *msg);

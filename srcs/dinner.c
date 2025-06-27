@@ -6,17 +6,33 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 10:01:54 by epinaud           #+#    #+#             */
-/*   Updated: 2025/06/25 20:01:52 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/06/27 10:25:42 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
+size_t	is_dinner_done(void)
+{
+	t_dinner	*dinner;
+
+	dinner = gset_dinner(0);
+	pthread_mutex_lock(&dinner->coordinator);
+	if (dinner->is_done)
+	{
+		pthread_mutex_unlock(&dinner->coordinator);
+		return (true);
+	}
+	pthread_mutex_unlock(&dinner->coordinator);
+	return (false);
+}
+
 void	launch_dinner(t_guest *thinker, t_dinner dinner)
 {
 	size_t	i;
 
-	if (pthread_mutex_init(&dinner.coordinator, NULL) != 0)
+	if (pthread_mutex_init(&dinner.coordinator, NULL) != 0
+		|| pthread_mutex_init(&dinner.display_lock, NULL)!= 0)
 		put_err("Failled to initialize mutex");
 	if (dinner.guest_count == 1)
 	{

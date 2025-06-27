@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/14 15:19:30 by epinaud           #+#    #+#             */
-/*   Updated: 2025/06/25 21:20:04 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/06/27 10:48:02 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,15 @@
 
 void	*dine_alone(void *philo)
 {
-	usleep(gset_dinner(0)->life_duration / 0.001);
+	ft_usleep(gset_dinner(0)->life_duration / 0.001);
 	display_state((t_guest *)philo, DIED);
 	return (NULL);
 }
 
 void	lift_forks(t_guest *philo)
 {
+	if (is_dinner_done())
+		return ;
 	if (&philo->fork_mutex < &philo->next->fork_mutex)
 	{
 		pthread_mutex_lock(&philo->fork_mutex);
@@ -52,8 +54,20 @@ size_t	eat(t_guest *philo)
 		return (0);
 	}
 	lift_forks(philo);
+	// if (is_dinner_done())
+	// {
+	// 	pthread_mutex_unlock(&philo->fork_mutex);
+	// 	pthread_mutex_unlock(&philo->next->fork_mutex);
+	// 	return (0);
+	// }
 	display_state(philo, EATING);
-	usleep(table->meal_duration);
+	ft_usleep(table->meal_duration);
+	// if (is_dinner_done())
+	// {
+	// 	pthread_mutex_unlock(&philo->fork_mutex);
+	// 	pthread_mutex_unlock(&philo->next->fork_mutex);
+	// 	return (0);
+	// }
 	philo->times_eaten++;
 	philo->last_meal = time_since_epoch();
 	pthread_mutex_unlock(&philo->fork_mutex);
@@ -73,18 +87,15 @@ void	*launch_routine(void *v_philo)
 		if (table->argc == MAX_ARGS
 			&& philo->times_eaten >= table->meals_required)
 			break ;
-		pthread_mutex_lock(&table->coordinator);
-		if(table->is_done)
-		{
-			pthread_mutex_unlock(&table->coordinator);
-			break;
-		}
-		pthread_mutex_unlock(&table->coordinator);
-		if (!eat(philo))
+		if (is_dinner_done() || !eat(philo) || is_dinner_done())
 			break ;
 		display_state(philo, SLEEPING);
-		usleep(table->sleep_duration);
+		ft_usleep(table->sleep_duration);
+		if (is_dinner_done())
+			break ;
 		display_state(philo, THINKING);
+		if (is_dinner_done())
+			break ;
 	}
 	return (NULL);
 }
