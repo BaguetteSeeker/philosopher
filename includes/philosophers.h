@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/11 21:47:23 by epinaud           #+#    #+#             */
-/*   Updated: 2025/06/27 10:48:43 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/06/27 19:17:59 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ typedef struct s_dinner
 	size_t			sleep_duration;
 	size_t			meals_required;
 	int				argc;
-	t_guest	*philos;
+	t_guest			*philos;
 }	t_dinner;
 
 void		launch_dinner(t_guest *thinker, t_dinner dinner);
@@ -76,7 +76,8 @@ t_dinner	*gset_dinner(void *g);
 size_t		is_dinner_done(void);
 size_t		time_since_start(void);
 size_t		time_since_epoch(void);
-void		ft_usleep(size_t milliseconds);
+void		ft_usleep(size_t milliseconds, t_guest *philo);
+void		check_death(t_guest *philo);
 
 //Utils
 void		put_err(char *msg);

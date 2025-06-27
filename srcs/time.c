@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 21:18:47 by epinaud           #+#    #+#             */
-/*   Updated: 2025/06/27 11:06:27 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/06/27 19:18:17 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,8 @@ void	safe_usleep(int duration_ms, long start_time)
 	while (1)
 	{
 		elapsed = time_since_start() - start_time;
-		// if (is_dinner_done())
-		// 	break ;
+		if (is_dinner_done())
+			break ;
 		if (elapsed >= duration_ms)
 			break ;
 		remaining = duration_ms - elapsed;
@@ -47,17 +47,18 @@ void	safe_usleep(int duration_ms, long start_time)
 }
 
 // Improved version of sleep function
-void	ft_usleep(size_t milliseconds)
+/* printf("Counter : %ld Time remaining : %ld 
+\n", milliseconds, (time_since_start() - start)); */
+void	ft_usleep(size_t milliseconds,t_guest *philo)
 {
 	size_t		start;
 
 	start = time_since_start();
 	while ((time_since_start() - start) < milliseconds)
 	{
+		check_death(philo);
 		if (is_dinner_done())
 			break ;
-
 		usleep(100);
-		// printf("Counter : %ld Time remaining : %ld \n", milliseconds, (time_since_start() - start));
 	}
 }

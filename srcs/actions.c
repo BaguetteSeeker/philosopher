@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/14 15:19:30 by epinaud           #+#    #+#             */
-/*   Updated: 2025/06/27 12:55:55 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/06/27 19:19:05 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	*dine_alone(void *philo)
 {
-	ft_usleep(gset_dinner(0)->life_duration / 0.001);
+	ft_usleep(gset_dinner(0)->life_duration / 0.001, (t_guest *)philo);
 	display_state((t_guest *)philo, DIED);
 	return (NULL);
 }
@@ -39,23 +39,35 @@ void	lift_forks(t_guest *philo)
 	}
 }
 
+void	check_death(t_guest *philo)
+{
+	t_dinner	*table;
+	static int	death = 0;
+
+	table = gset_dinner(0);
+	if (table->life_duration == 0
+	|| time_since_epoch() - philo->last_meal > table->life_duration)
+	{
+		if (death)
+			return ;
+		else
+			death = 1;
+		pthread_mutex_lock(&table->coordinator);
+		table->is_done = true;
+		pthread_mutex_unlock(&table->coordinator);
+		display_state(philo, DIED);
+		return ;
+	}
+}
+
 size_t	eat(t_guest *philo)
 {
 	t_dinner	*table;
 
 	table = gset_dinner(0);
-	if (table->life_duration == 0
-		|| time_since_epoch() - philo->last_meal > table->life_duration)
-	{
-		pthread_mutex_lock(&table->coordinator);
-		table->is_done = true;
-		pthread_mutex_unlock(&table->coordinator);
-		display_state(philo, DIED);
-		return (0);
-	}
 	lift_forks(philo);
 	display_state(philo, EATING);
-	ft_usleep(table->meal_duration);
+	ft_usleep(table->meal_duration, philo);
 	philo->times_eaten++;
 	philo->last_meal = time_since_epoch();
 	pthread_mutex_unlock(&philo->fork_mutex);
@@ -78,7 +90,7 @@ void	*launch_routine(void *v_philo)
 		if (is_dinner_done() || !eat(philo) || is_dinner_done())
 			break ;
 		display_state(philo, SLEEPING);
-		ft_usleep(table->sleep_duration);
+		ft_usleep(table->sleep_duration, philo);
 		if (is_dinner_done())
 			break ;
 		display_state(philo, THINKING);
