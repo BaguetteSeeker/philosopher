@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 10:01:54 by epinaud           #+#    #+#             */
-/*   Updated: 2025/06/27 10:25:42 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/06/27 11:05:59 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,9 +68,9 @@ int	set_table(int argc, char *args[])
 		else if (i == 1)
 			dinner->life_duration = val;
 		else if (i == 2)
-			dinner->meal_duration = val / 0.001;
+			dinner->meal_duration = val;
 		else if (i == 3)
-			dinner->sleep_duration = val / 0.001;
+			dinner->sleep_duration = val;
 		else if (i == 4)
 			dinner->meals_required = val;
 		i++;

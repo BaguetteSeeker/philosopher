@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 21:18:47 by epinaud           #+#    #+#             */
-/*   Updated: 2025/06/27 10:33:24 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/06/27 11:06:27 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,8 @@ void	ft_usleep(size_t milliseconds)
 	{
 		if (is_dinner_done())
 			break ;
+
 		usleep(100);
+		// printf("Counter : %ld Time remaining : %ld \n", milliseconds, (time_since_start() - start));
 	}
 }
