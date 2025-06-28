@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/14 15:19:30 by epinaud           #+#    #+#             */
-/*   Updated: 2025/06/27 19:19:05 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/06/28 20:01:31 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,8 +70,8 @@ size_t	eat(t_guest *philo)
 	ft_usleep(table->meal_duration, philo);
 	philo->times_eaten++;
 	philo->last_meal = time_since_epoch();
-	pthread_mutex_unlock(&philo->fork_mutex);
 	pthread_mutex_unlock(&philo->next->fork_mutex);
+	pthread_mutex_unlock(&philo->fork_mutex);
 	return (1);
 }
 
