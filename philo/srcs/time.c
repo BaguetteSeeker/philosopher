@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 21:18:47 by epinaud           #+#    #+#             */
-/*   Updated: 2025/06/27 19:18:17 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/06/29 16:18:39 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,14 +51,21 @@ void	safe_usleep(int duration_ms, long start_time)
 \n", milliseconds, (time_since_start() - start)); */
 void	ft_usleep(size_t milliseconds,t_guest *philo)
 {
-	size_t		start;
+	size_t	start;
+	size_t	elapsed;
 
 	start = time_since_start();
-	while ((time_since_start() - start) < milliseconds)
+	while (1)
 	{
 		check_death(philo);
 		if (is_dinner_done())
 			break ;
-		usleep(100);
+		elapsed = time_since_start() - start;
+		if (elapsed >= milliseconds)
+			break ;
+		if (milliseconds - elapsed > 2)
+			usleep((milliseconds - elapsed - 1) * 1000);
+		else
+			usleep(100);
 	}
 }

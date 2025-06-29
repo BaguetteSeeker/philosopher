@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 21:25:35 by epinaud           #+#    #+#             */
-/*   Updated: 2025/06/27 13:02:08 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/06/29 15:54:56 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,6 @@ int	main(int argc, char *argv[])
 	if (argc < 5)
 		put_err("Insufficient argument count");
 	set_table(argc, &argv[1]);
-	printf("There is %ld philosophers around the table\n", dinner.guest_count);
 	init_philo(&dinner.philos, dinner);
 	cleanup_table(&dinner, dinner.philos);
 	pthread_mutex_destroy(&gset_dinner(0)->coordinator);

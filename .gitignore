@@ -56,4 +56,3 @@ dkms.conf
 .vscode/*
 *test*
 _debug_files
-philo

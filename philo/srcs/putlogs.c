@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/15 18:37:41 by epinaud           #+#    #+#             */
-/*   Updated: 2025/06/27 10:44:12 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/06/29 15:54:40 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,6 @@ void	display_state(t_guest *philo, size_t action)
 	else if (action == DIED)
 		printf("\033[31m%ld %ld died\033[0m\n", time_since_start(), philo->id);
 	else if (action == PICKING_FORK && !is_dinner_done())
-		printf("%ld %ld, has taken a fork\n", time_since_start(), philo->id);
+		printf("%ld %ld has taken a fork\n", time_since_start(), philo->id);
 	pthread_mutex_unlock(&gset_dinner(0)->display_lock);
 }
