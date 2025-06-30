@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/14 15:19:30 by epinaud           #+#    #+#             */
-/*   Updated: 2025/06/30 09:48:13 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/06/30 15:52:34 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	*dine_alone(void *philo)
 {
-	ft_usleep(gset_dinner(0)->life_duration / 0.001, (t_guest *)philo);
+	usleep(gset_dinner(0)->life_duration / 0.001);
 	display_state((t_guest *)philo, DIED);
 	return (NULL);
 }
@@ -68,8 +68,8 @@ size_t	eat(t_guest *philo)
 	lift_forks(philo);
 	display_state(philo, EATING);
 	ft_usleep(table->meal_duration, philo);
-	philo->times_eaten++;
 	philo->last_meal = time_since_epoch();
+	philo->times_eaten++;
 	pthread_mutex_unlock(&philo->next->fork_mutex);
 	pthread_mutex_unlock(&philo->fork_mutex);
 	return (1);
@@ -92,9 +92,11 @@ void	*launch_routine(void *v_philo)
 			break ;
 		display_state(philo, SLEEPING);
 		ft_usleep(table->sleep_duration, philo);
+		check_death(philo);
 		if (is_dinner_done())
 			break ;
 		display_state(philo, THINKING);
+		check_death(philo);
 		if (is_dinner_done())
 			break ;
 	}

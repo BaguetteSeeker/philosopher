@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 10:01:54 by epinaud           #+#    #+#             */
-/*   Updated: 2025/06/30 09:24:27 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/06/30 17:14:08 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,11 +40,24 @@ void	launch_dinner(t_guest *thinker, t_dinner dinner)
 		return ;
 	}
 	i = 0;
-	while (i++ < dinner.guest_count)
+	while (i < dinner.guest_count)
 	{
 		thinker->last_meal = gset_dinner(0)->start_time;
 		pthread_create(&thinker->thread, NULL, launch_routine, thinker);
-		thinker = thinker->next;
+		thinker = thinker->next->next;
+		i += 2;
+		// printf("launching new philo");
+	}
+	usleep(50);
+	i = 1;
+	thinker = thinker->next;
+	while (i < dinner.guest_count)
+	{
+		thinker->last_meal = gset_dinner(0)->start_time;
+		pthread_create(&thinker->thread, NULL, launch_routine, thinker);
+		thinker = thinker->next->next;
+		i += 2;
+		// printf("launching new philo 2");
 	}
 }
 
