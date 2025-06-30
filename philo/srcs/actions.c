@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/14 15:19:30 by epinaud           #+#    #+#             */
-/*   Updated: 2025/06/30 15:52:34 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/07/01 18:27:20 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,15 @@
 
 void	*dine_alone(void *philo)
 {
+	pthread_mutex_lock(&((t_guest *)philo)->fork_mutex);
+	display_state(philo, PICKING_FORK);
 	usleep(gset_dinner(0)->life_duration / 0.001);
 	display_state((t_guest *)philo, DIED);
+	pthread_mutex_unlock(&((t_guest *)philo)->fork_mutex);
 	return (NULL);
 }
 
-void	lift_forks(t_guest *philo)
+static void	lift_forks(t_guest *philo)
 {
 	if (is_dinner_done())
 		return ;
@@ -41,18 +44,18 @@ void	lift_forks(t_guest *philo)
 
 void	check_death(t_guest *philo)
 {
-	t_dinner	*table;
-	static int	death = 0;
+	t_dinner				*table;
 
 	table = gset_dinner(0);
 	if (table->life_duration == 0 || time_since_epoch()
 		- philo->last_meal > table->life_duration)
 	{
-		if (death)
-			return ;
-		else
-			death = 1;
 		pthread_mutex_lock(&table->coordinator);
+		if (table->is_done)
+		{
+			pthread_mutex_unlock(&table->coordinator);
+			return ;
+		}
 		table->is_done = true;
 		pthread_mutex_unlock(&table->coordinator);
 		display_state(philo, DIED);
@@ -60,7 +63,7 @@ void	check_death(t_guest *philo)
 	}
 }
 
-size_t	eat(t_guest *philo)
+static size_t	eat(t_guest *philo)
 {
 	t_dinner	*table;
 
@@ -70,8 +73,16 @@ size_t	eat(t_guest *philo)
 	ft_usleep(table->meal_duration, philo);
 	philo->last_meal = time_since_epoch();
 	philo->times_eaten++;
-	pthread_mutex_unlock(&philo->next->fork_mutex);
-	pthread_mutex_unlock(&philo->fork_mutex);
+	if (&philo->fork_mutex < &philo->next->fork_mutex)
+	{
+		pthread_mutex_unlock(&philo->fork_mutex);
+		pthread_mutex_unlock(&philo->next->fork_mutex);
+	}
+	else
+	{
+		pthread_mutex_unlock(&philo->next->fork_mutex);
+		pthread_mutex_unlock(&philo->fork_mutex);
+	}
 	return (1);
 }
 

@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 21:25:35 by epinaud           #+#    #+#             */
-/*   Updated: 2025/06/30 12:42:08 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/07/01 18:28:13 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ t_dinner	*gset_dinner(void *g)
 	return (stored_g);
 }
 
-t_guest	*create_philos(t_guest **head, t_dinner dinner)
+static t_guest	*create_philos(t_guest **head, t_dinner dinner)
 {
 	t_guest			*thinker;
 	size_t			i;
@@ -43,7 +43,7 @@ t_guest	*create_philos(t_guest **head, t_dinner dinner)
 	return (*head);
 }
 
-void	init_philo(t_guest **head, t_dinner dinner)
+static void	init_philo(t_guest **head, t_dinner dinner)
 {
 	t_guest			*thinker;
 	size_t			i;
@@ -68,6 +68,8 @@ int	main(int argc, char *argv[])
 	if (argc < 5)
 		put_err("Insufficient argument count");
 	set_table(argc, &argv[1]);
+	if (dinner.guest_count == 0)
+		put_err("There are no guest to your table..");
 	init_philo(&dinner.philos, dinner);
 	cleanup_table(&dinner, dinner.philos);
 	pthread_mutex_destroy(&gset_dinner(0)->coordinator);

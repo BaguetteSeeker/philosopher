@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 21:18:47 by epinaud           #+#    #+#             */
-/*   Updated: 2025/06/30 15:43:38 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/07/01 18:24:21 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,25 +26,25 @@ size_t	time_since_start(void)
 	return (time_since_epoch() - gset_dinner(0)->start_time);
 }
 
-void	safe_usleep(int duration_ms, long start_time)
-{
-	long	elapsed;
-	long	remaining;
+// void	safe_usleep(int duration_ms, long start_time)
+// {
+// 	long	elapsed;
+// 	long	remaining;
 
-	while (1)
-	{
-		elapsed = time_since_start() - start_time;
-		if (is_dinner_done())
-			break ;
-		if (elapsed >= duration_ms)
-			break ;
-		remaining = duration_ms - elapsed;
-		if (remaining > 2)
-			usleep((remaining - 1) * 1000);
-		else
-			usleep(100);
-	}
-}
+// 	while (1)
+// 	{
+// 		elapsed = time_since_start() - start_time;
+// 		if (is_dinner_done())
+// 			break ;
+// 		if (elapsed >= duration_ms)
+// 			break ;
+// 		remaining = duration_ms - elapsed;
+// 		if (remaining > 2)
+// 			usleep((remaining - 1) * 1000);
+// 		else
+// 			usleep(100);
+// 	}
+// }
 
 // Improved version of sleep function
 //printf("%zu usleeping %zu ms\n", philo->id, sleep_ms);

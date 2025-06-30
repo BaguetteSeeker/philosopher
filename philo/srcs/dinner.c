@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 10:01:54 by epinaud           #+#    #+#             */
-/*   Updated: 2025/06/30 17:14:08 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/07/01 18:27:35 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,10 +27,28 @@ size_t	is_dinner_done(void)
 	return (false);
 }
 
-void	launch_dinner(t_guest *thinker, t_dinner dinner)
+// printf("Launched philo %ld\n", thinker->id);
+static void	launch_philo_batch(t_guest *thinker, size_t batch_size)
 {
 	size_t	i;
 
+	i = 0;
+	if (thinker->id != 1)
+		i++;
+	while (i < batch_size)
+	{
+		thinker->last_meal = gset_dinner(0)->start_time;
+		pthread_create(&thinker->thread, NULL, launch_routine, thinker);
+		thinker = thinker->next->next;
+		i += 2;
+	}
+}
+
+void	launch_dinner(t_guest *thinker, t_dinner dinner)
+{
+	t_guest	*even_thinkers;
+
+	even_thinkers = thinker->next;
 	if (pthread_mutex_init(&dinner.coordinator, NULL) != 0
 		|| pthread_mutex_init(&dinner.display_lock, NULL) != 0)
 		put_err("Failled to initialize mutex");
@@ -39,26 +57,9 @@ void	launch_dinner(t_guest *thinker, t_dinner dinner)
 		pthread_create(&thinker->thread, NULL, dine_alone, thinker);
 		return ;
 	}
-	i = 0;
-	while (i < dinner.guest_count)
-	{
-		thinker->last_meal = gset_dinner(0)->start_time;
-		pthread_create(&thinker->thread, NULL, launch_routine, thinker);
-		thinker = thinker->next->next;
-		i += 2;
-		// printf("launching new philo");
-	}
-	usleep(50);
-	i = 1;
-	thinker = thinker->next;
-	while (i < dinner.guest_count)
-	{
-		thinker->last_meal = gset_dinner(0)->start_time;
-		pthread_create(&thinker->thread, NULL, launch_routine, thinker);
-		thinker = thinker->next->next;
-		i += 2;
-		// printf("launching new philo 2");
-	}
+	launch_philo_batch(thinker, dinner.guest_count);
+	usleep(500);
+	launch_philo_batch(even_thinkers, dinner.guest_count);
 }
 
 void	set_table(int argc, char *args[])
