@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 21:25:35 by epinaud           #+#    #+#             */
-/*   Updated: 2025/06/29 15:54:56 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/06/30 12:42:08 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,8 +59,6 @@ void	init_philo(t_guest **head, t_dinner dinner)
 	}
 }
 
-	/* printf("<<The following message should never appear before any philo log\
->>\nBOTH THREADS HAVE RETURNED\n Main thread unshackled\n"); */
 int	main(int argc, char *argv[])
 {
 	t_dinner		dinner;

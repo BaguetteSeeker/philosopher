@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 10:01:54 by epinaud           #+#    #+#             */
-/*   Updated: 2025/06/27 13:01:08 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/06/30 09:24:27 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,9 +48,8 @@ void	launch_dinner(t_guest *thinker, t_dinner dinner)
 	}
 }
 
-int	set_table(int argc, char *args[])
+void	set_table(int argc, char *args[])
 {
-	size_t				val;
 	static size_t		i = 0;
 	static size_t		j = 0;
 	t_dinner			*dinner;
@@ -62,21 +61,19 @@ int	set_table(int argc, char *args[])
 		while (args[i][j])
 			if (!ft_isdigit(args[i][j++]))
 				put_err("Given parameter is not a number");
-		val = ft_atoi(args[i]);
 		if (i == 0)
-			dinner->guest_count = val;
+			dinner->guest_count = ft_atoi(args[i]);
 		else if (i == 1)
-			dinner->life_duration = val;
+			dinner->life_duration = ft_atoi(args[i]);
 		else if (i == 2)
-			dinner->meal_duration = val;
+			dinner->meal_duration = ft_atoi(args[i]);
 		else if (i == 3)
-			dinner->sleep_duration = val;
+			dinner->sleep_duration = ft_atoi(args[i]);
 		else if (i == 4)
-			dinner->meals_required = val;
+			dinner->meals_required = ft_atoi(args[i]);
 		i++;
 		dinner->argc = argc;
 	}
-	return (1);
 }
 
 void	cleanup_table(t_dinner	*dinner, t_guest *philos)

@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 21:18:47 by epinaud           #+#    #+#             */
-/*   Updated: 2025/06/29 19:13:33 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/06/30 09:23:59 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,44 +47,7 @@ void	safe_usleep(int duration_ms, long start_time)
 }
 
 // Improved version of sleep function
-/* printf("Counter : %ld Time remaining : %ld 
-\n", milliseconds, (time_since_start() - start)); */
-// void	ft_usleep(size_t milliseconds,t_guest *philo)
-// {
-// 	size_t	start;
-// 	size_t	elapsed;
-// 	size_t	elapsed_epoch;
-
-// 	start = time_since_start();
-// 	while (1)
-// 	{
-// 		check_death(philo);
-// 		elapsed = time_since_start() - start;
-// 		if (is_dinner_done() || elapsed >= milliseconds)
-// 			break ;
-// 		if (milliseconds - elapsed > 2)
-// 		{
-// 		elapsed_epoch = time_since_epoch();
-// 		if (philo->last_meal + gset_dinner(0)->life_duration
-// 			< elapsed_epoch + milliseconds - 1)
-// 			if (philo->last_meal + gset_dinner(0)->life_duration - elapsed_epoch > 2)
-// 			{
-// 				printf("%zu usleeping %zu ms\n", philo->id, philo->last_meal + gset_dinner(0)->life_duration - time_since_epoch());
-// 				usleep((philo->last_meal + gset_dinner(0)->life_duration - elapsed_epoch) * 1000);
-// 			}
-// 			else
-// 				usleep(100);
-// 		else
-// 		{
-// 			if (milliseconds - elapsed > 2)
-// 				usleep((milliseconds - elapsed - 1) * 1000);
-// 			else
-// 				usleep(100);
-// 		}
-// 		}
-// 	}
-// }
-
+//printf("%zu usleeping %zu ms\n", philo->id, sleep_ms);
 void	ft_usleep(size_t milliseconds, t_guest *philo)
 {
 	size_t	start;
@@ -102,10 +65,8 @@ void	ft_usleep(size_t milliseconds, t_guest *philo)
 		elapsed_epoch = time_since_epoch();
 		if (philo->last_meal + gset_dinner(0)->life_duration
 			< elapsed_epoch + milliseconds)
-		{
-			sleep_ms = philo->last_meal + gset_dinner(0)->life_duration - elapsed_epoch;
-			printf("%zu usleeping %zu ms\n", philo->id, sleep_ms);
-		}
+			sleep_ms = philo->last_meal
+				+ gset_dinner(0)->life_duration - elapsed_epoch;
 		else
 			sleep_ms = milliseconds - elapsed;
 		if (sleep_ms > 2)

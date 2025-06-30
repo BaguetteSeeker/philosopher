@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/11 21:47:23 by epinaud           #+#    #+#             */
-/*   Updated: 2025/06/29 18:55:57 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/06/30 12:46:42 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,13 +31,6 @@ enum e_philo_state
 	PICKING_FORK,
 	DIED
 };
-
-typedef struct s_cycle_counter
-{
-	size_t			life;
-	size_t			meal;
-	size_t			sleep;
-}	t_cycle_counter;
 
 typedef struct s_guest
 {
@@ -68,7 +61,7 @@ typedef struct s_dinner
 void		launch_dinner(t_guest *thinker, t_dinner dinner);
 void		*dine_alone(void *philo);
 void		*launch_routine(void *v_philo);
-int			set_table(int argc, char *args[]);
+void		set_table(int argc, char *args[]);
 void		cleanup_table(t_dinner	*dinner, t_guest *philos);
 void		display_state(t_guest *philo, size_t action);
 size_t		eat(t_guest *guest);

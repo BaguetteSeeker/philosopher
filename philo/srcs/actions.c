@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/14 15:19:30 by epinaud           #+#    #+#             */
-/*   Updated: 2025/06/29 18:56:11 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/06/30 09:48:13 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,8 @@ void	check_death(t_guest *philo)
 	static int	death = 0;
 
 	table = gset_dinner(0);
-	if (table->life_duration == 0
-	|| time_since_epoch() - philo->last_meal > table->life_duration)
+	if (table->life_duration == 0 || time_since_epoch()
+		- philo->last_meal > table->life_duration)
 	{
 		if (death)
 			return ;
@@ -87,6 +87,7 @@ void	*launch_routine(void *v_philo)
 		if (table->argc == MAX_ARGS
 			&& philo->times_eaten >= table->meals_required)
 			break ;
+		check_death(philo);
 		if (is_dinner_done() || !eat(philo) || is_dinner_done())
 			break ;
 		display_state(philo, SLEEPING);
