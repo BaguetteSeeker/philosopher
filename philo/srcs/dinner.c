@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 10:01:54 by epinaud           #+#    #+#             */
-/*   Updated: 2025/07/01 18:27:35 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/07/02 16:51:03 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,8 @@ static void	launch_philo_batch(t_guest *thinker, size_t batch_size)
 	while (i < batch_size)
 	{
 		thinker->last_meal = gset_dinner(0)->start_time;
-		pthread_create(&thinker->thread, NULL, launch_routine, thinker);
+		if (pthread_create(&thinker->thread, NULL, launch_routine, thinker))
+			put_err("Failled to create thread");
 		thinker = thinker->next->next;
 		i += 2;
 	}
@@ -54,7 +55,8 @@ void	launch_dinner(t_guest *thinker, t_dinner dinner)
 		put_err("Failled to initialize mutex");
 	if (dinner.guest_count == 1)
 	{
-		pthread_create(&thinker->thread, NULL, dine_alone, thinker);
+		if (pthread_create(&thinker->thread, NULL, dine_alone, thinker))
+			put_err("Failled to create thread");
 		return ;
 	}
 	launch_philo_batch(thinker, dinner.guest_count);

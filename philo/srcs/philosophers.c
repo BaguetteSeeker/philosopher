@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 21:25:35 by epinaud           #+#    #+#             */
-/*   Updated: 2025/07/01 18:28:13 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/07/01 21:16:54 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ static void	init_philo(t_guest **head, t_dinner dinner)
 		pthread_join(thinker->thread, NULL);
 		thinker = thinker->next;
 	}
+	dinner.philos = thinker;
 }
 
 int	main(int argc, char *argv[])

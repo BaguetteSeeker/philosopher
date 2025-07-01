@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/15 18:37:41 by epinaud           #+#    #+#             */
-/*   Updated: 2025/06/29 15:54:40 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/07/01 21:22:11 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ void	put_err(char *msg)
 		ft_putstr_fd(msg, STDERR_FILENO);
 		write(STDERR_FILENO, "\n", 1);
 	}
+	cleanup_table(gset_dinner(0), gset_dinner(0)->philos);
 	exit(EXIT_FAILURE);
 }
 
