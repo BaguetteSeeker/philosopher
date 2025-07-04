@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/14 15:19:30 by epinaud           #+#    #+#             */
-/*   Updated: 2025/07/02 18:40:05 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/07/04 19:58:45 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,75 +22,77 @@ void	*dine_alone(void *philo)
 	return (NULL);
 }
 
-static void	lift_forks(t_guest *philo)
+void	think(t_guest *philo, bool silent)
 {
-	if (is_dinner_done())
-		return ;
+	time_t	time_to_think;
+
+	time_to_think = (gset_dinner(0)->life_duration
+			- (time_since_epoch() - philo->last_meal)
+			- gset_dinner(0)->meal_duration / 2);
+	if (time_to_think < 0)
+		time_to_think = 0;
+	if (time_to_think == 0 && silent == true)
+		time_to_think = 1;
+	if (time_to_think > 600)
+		time_to_think = 200;
+	if (silent == false)
+		display_state(philo, THINKING);
+	ft_usleep(time_to_think, philo);
+}
+
+static bool	lift_forks(t_guest *philo)
+{
+	pthread_mutex_t	*st_fork;
+	pthread_mutex_t	*nd_fork;
+
 	if (philo->id % 2 == 0)
 	{
-		pthread_mutex_lock(&philo->fork_mutex);
-		display_state(philo, PICKING_FORK);
-		check_death(philo);
-		if (is_dinner_done())
-			return ;
-		pthread_mutex_lock(&philo->next->fork_mutex);
-		display_state(philo, PICKING_FORK);
+		st_fork = &philo->fork_mutex;
+		nd_fork = &philo->next->fork_mutex;
 	}
 	else
 	{
-		pthread_mutex_lock(&philo->next->fork_mutex);
-		display_state(philo, PICKING_FORK);
-		check_death(philo);
-		if (is_dinner_done())
-			return ;
-		pthread_mutex_lock(&philo->fork_mutex);
-		display_state(philo, PICKING_FORK);
+		st_fork = &philo->next->fork_mutex;
+		nd_fork = &philo->fork_mutex;
 	}
-}
-
-void	check_death(t_guest *philo)
-{
-	t_dinner				*table;
-
-	table = gset_dinner(0);
-	if (table->life_duration == 0 || time_since_epoch()
-		- philo->last_meal > table->life_duration)
-	{
-		pthread_mutex_lock(&table->coordinator);
-		if (table->is_done)
-		{
-			pthread_mutex_unlock(&table->coordinator);
-			return ;
-		}
-		table->is_done = true;
-		pthread_mutex_unlock(&table->coordinator);
-		display_state(philo, DIED);
-		return ;
-	}
+	if (is_dinner_done())
+		return (0);
+	if (dies_with_fork(philo, NULL))
+		return (0);
+	pthread_mutex_lock(st_fork);
+	display_state(philo, PICKING_FORK);
+	if (dies_with_fork(philo, st_fork))
+		return (0);
+	pthread_mutex_lock(nd_fork);
+	display_state(philo, PICKING_FORK);
+	return (1);
 }
 
 static size_t	eat(t_guest *philo)
 {
-	t_dinner	*table;
+	t_dinner		*table;
+	pthread_mutex_t	*st_fork;
+	pthread_mutex_t	*nd_fork;
 
 	table = gset_dinner(0);
-	lift_forks(philo);
-	philo->last_meal = time_since_epoch();
-	philo->times_eaten++;
-	display_state(philo, EATING);
-	ft_usleep(table->meal_duration, philo, EATING);
 	if (philo->id % 2 == 0)
 	{
-		pthread_mutex_unlock(&philo->fork_mutex);
-		pthread_mutex_unlock(&philo->next->fork_mutex);
-		// printf("Philo %ld realising forks at %ld\n", philo->id, time_since_start());
+		st_fork = &philo->fork_mutex;
+		nd_fork = &philo->next->fork_mutex;
 	}
 	else
 	{
-		pthread_mutex_unlock(&philo->next->fork_mutex);
-		pthread_mutex_unlock(&philo->fork_mutex);
-		// printf("Philo %ld realising forks at %ld\n", philo->id, time_since_start());
+		st_fork = &philo->next->fork_mutex;
+		nd_fork = &philo->fork_mutex;
 	}
+	if (!lift_forks(philo))
+		return (0);
+	philo->last_meal = time_since_epoch();
+	philo->times_eaten++;
+	display_state(philo, EATING);
+	ft_usleep(table->meal_duration, philo);
+	pthread_mutex_unlock(st_fork);
+	pthread_mutex_unlock(nd_fork);
 	return (1);
 }
 
@@ -110,10 +112,11 @@ void	*launch_routine(void *v_philo)
 		if (is_dinner_done() || !eat(philo) || is_dinner_done())
 			break ;
 		display_state(philo, SLEEPING);
-		ft_usleep(table->sleep_duration, philo, SLEEPING);
+		ft_usleep(table->sleep_duration, philo);
 		check_death(philo);
 		if (is_dinner_done())
 			break ;
+		think(philo, false);
 		display_state(philo, THINKING);
 		check_death(philo);
 		if (is_dinner_done())

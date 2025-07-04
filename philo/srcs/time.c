@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 21:18:47 by epinaud           #+#    #+#             */
-/*   Updated: 2025/07/02 18:50:34 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/07/04 19:56:33 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ size_t	time_since_start(void)
 
 // Improved version of sleep function
 //printf("%zu usleeping %zu ms\n", philo->id, sleep_ms);
-void	ft_usleep(size_t milliseconds, t_guest *philo, size_t action)
+void	ft_usleep(size_t milliseconds, t_guest *philo)
 {
 	size_t	start;
 	size_t	elapsed;
@@ -65,24 +65,13 @@ void	ft_usleep(size_t milliseconds, t_guest *philo, size_t action)
 			break ;
 		if (philo->last_meal + gset_dinner(0)->life_duration
 			< epoch_time + milliseconds - elapsed)
-		{
-			sleep_ms = philo->last_meal + gset_dinner(0)->life_duration - epoch_time;
-			printf("Custom sleep time %ld for philo %ld\n Action [%ld] and elapsed : %ld\n", sleep_ms, philo->id, action,elapsed);
-		}
+			sleep_ms = philo->last_meal
+				+ gset_dinner(0)->life_duration - epoch_time;
 		else
 			sleep_ms = milliseconds - elapsed;
 		if (sleep_ms > 2)
 			usleep((sleep_ms - 1) / 0.001);
 		else
 			usleep(100);
-		if (sleep_ms > 2)
-		{
-			if (action == EATING)
-				printf("Just slept %ld for philo %ld in action [EATING]\n", sleep_ms, philo->id);
-			else if (action == SLEEPING)
-				printf("Just slept %ld for philo %ld in action [SLEEPING]\n", sleep_ms, philo->id);
-			else
-				printf("Unknown action\n");
-		}
 	}
 }

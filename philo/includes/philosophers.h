@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/11 21:47:23 by epinaud           #+#    #+#             */
-/*   Updated: 2025/07/02 18:10:07 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/07/04 19:51:16 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,8 +69,9 @@ t_dinner	*gset_dinner(void *g);
 size_t		is_dinner_done(void);
 size_t		time_since_start(void);
 size_t		time_since_epoch(void);
-void		ft_usleep(size_t milliseconds, t_guest *philo, size_t action);
+void		ft_usleep(size_t milliseconds, t_guest *philo);
 void		check_death(t_guest *philo);
+bool		dies_with_fork(t_guest *philo, pthread_mutex_t *fork);
 
 //Utils
 void		put_err(char *msg);

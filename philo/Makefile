@@ -6,7 +6,7 @@
 #    By: epinaud <marvin@42.fr>                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/25 16:30:14 by epinaud           #+#    #+#              #
-#    Updated: 2025/06/27 09:08:56 by epinaud          ###   ########.fr        #
+#    Updated: 2025/07/04 16:10:06 by epinaud          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,7 +22,7 @@ LDLIBS = -pthread
 
 OBJ_DIR = .obj
 
-SRCS = philosophers.c dinner.c actions.c lib_utils.c putlogs.c time.c
+SRCS = philosophers.c dinner.c actions.c death.c lib_utils.c putlogs.c time.c
 
 $(OBJ_DIR)/%.o : srcs/%.c
 	$(CC) -c $(CFLAGS) $(INCLUDES) $< -o $@

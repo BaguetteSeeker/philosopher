@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 10:01:54 by epinaud           #+#    #+#             */
-/*   Updated: 2025/07/02 16:51:03 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/07/04 19:50:43 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ void	launch_dinner(t_guest *thinker, t_dinner dinner)
 		return ;
 	}
 	launch_philo_batch(thinker, dinner.guest_count);
-	usleep(500);
+	usleep(dinner.meal_duration / 0.001);
 	launch_philo_batch(even_thinkers, dinner.guest_count);
 }
 
