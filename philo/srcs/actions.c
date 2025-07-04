@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/14 15:19:30 by epinaud           #+#    #+#             */
-/*   Updated: 2025/07/04 19:58:45 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/07/04 21:25:48 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,11 +24,12 @@ void	*dine_alone(void *philo)
 
 void	think(t_guest *philo, bool silent)
 {
-	time_t	time_to_think;
+	long	time_to_think;
 
 	time_to_think = (gset_dinner(0)->life_duration
 			- (time_since_epoch() - philo->last_meal)
 			- gset_dinner(0)->meal_duration / 2);
+	// printf("%ld Time to think for philo %ld is %ld\n", time_since_start(), philo->id, time_to_think);
 	if (time_to_think < 0)
 		time_to_think = 0;
 	if (time_to_think == 0 && silent == true)
@@ -36,7 +37,7 @@ void	think(t_guest *philo, bool silent)
 	if (time_to_think > 600)
 		time_to_think = 200;
 	if (silent == false)
-		display_state(philo, THINKING);
+	display_state(philo, THINKING);
 	ft_usleep(time_to_think, philo);
 }
 
@@ -85,7 +86,7 @@ static size_t	eat(t_guest *philo)
 		st_fork = &philo->next->fork_mutex;
 		nd_fork = &philo->fork_mutex;
 	}
-	if (!lift_forks(philo))
+	if (!lift_forks(philo) || is_dinner_done())
 		return (0);
 	philo->last_meal = time_since_epoch();
 	philo->times_eaten++;
@@ -117,7 +118,6 @@ void	*launch_routine(void *v_philo)
 		if (is_dinner_done())
 			break ;
 		think(philo, false);
-		display_state(philo, THINKING);
 		check_death(philo);
 		if (is_dinner_done())
 			break ;
