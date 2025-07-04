@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/14 15:19:30 by epinaud           #+#    #+#             */
-/*   Updated: 2025/07/04 22:00:56 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/07/04 22:46:01 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,6 @@ void	think(t_guest *philo, bool silent)
 
 	time_to_think = (gset_dinner(0)->life_duration
 			- (time_since_epoch() - philo->last_meal)) / 2;
-	printf("%ld Time to think for philo %ld is %ld\n", time_since_start(), philo->id, time_to_think);
 	if (time_to_think < 0)
 		time_to_think = 0;
 	if (time_to_think == 0 && silent == true)
@@ -36,7 +35,7 @@ void	think(t_guest *philo, bool silent)
 	if (time_to_think > 600)
 		time_to_think = 200;
 	if (silent == false)
-	display_state(philo, THINKING);
+		display_state(philo, THINKING);
 	ft_usleep(time_to_think, philo);
 }
 
