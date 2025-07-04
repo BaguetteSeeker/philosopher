@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 16:09:28 by epinaud           #+#    #+#             */
-/*   Updated: 2025/07/04 21:23:30 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/07/04 21:38:36 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,13 +23,11 @@ bool	dies_with_fork(t_guest *philo, pthread_mutex_t *fork)
 
 	table = gset_dinner(0);
 	death_time = philo->last_meal + table->life_duration;
-	if (philo->id % 2 && table->meal_duration >= table->sleep_duration
+	if (table->meal_duration >= table->sleep_duration
 		&& table->life_duration < table->meal_duration * 2
 		&& death_time < time_since_epoch() + (table->life_duration
 			- (table->meal_duration + table->sleep_duration)))
 	{
-		// printf("%ld philo %ld will sleep for %f", time_since_start(), philo->id, (table->life_duration
-		// 		- (table->meal_duration + table->sleep_duration)) / 0.001);
 		ft_usleep((table->life_duration
 				- (table->meal_duration + table->sleep_duration)) / 0.001, philo);
 		check_death(philo);
