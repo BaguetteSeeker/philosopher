@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philo_utils.c                                      :+:      :+:    :+:   */
+/*   lib_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/14 17:01:27 by epinaud           #+#    #+#             */
-/*   Updated: 2025/06/24 10:15:04 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/07/05 14:48:06 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,14 @@ int	ft_isdigit(int c)
 		return (0);
 }
 
+int	ft_min(int a, int b)
+{
+	if (a < b)
+		return (a);
+	else
+		return (b);
+}
+
 int	ft_atoi(const char *nptr)
 {
 	size_t	i;
@@ -29,7 +37,8 @@ int	ft_atoi(const char *nptr)
 	i = 0;
 	sum = 0;
 	sign = 1;
-	while (ft_strchr(" \t\n\v\f\r", nptr[i]))
+	while (nptr[i] == ' ' || nptr[i] == '\t' || nptr[i] == '\n'
+			|| nptr[i] == '\v' || nptr[i] == '\f' || nptr[i] == '\r')
 		i++;
 	if (nptr[i] == '+' || nptr[i] == '-')
 	{

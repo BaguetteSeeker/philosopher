@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/11 21:47:23 by epinaud           #+#    #+#             */
-/*   Updated: 2025/07/04 22:39:40 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/07/05 18:18:12 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,6 @@ void		*launch_routine(void *v_philo);
 void		set_table(int argc, char *args[]);
 void		cleanup_table(t_dinner	*dinner, t_guest *philos);
 void		display_state(t_guest *philo, size_t action);
-// size_t		eat(t_guest *guest);
 t_dinner	*gset_dinner(void *g);
 size_t		is_dinner_done(void);
 size_t		time_since_start(void);
@@ -78,6 +77,7 @@ void		put_err(char *msg);
 void		lst_put(t_guest *lst);
 void		ft_putstr_fd(char *s, int fd);
 int			ft_isdigit(int c);
+int			ft_min(int a, int b);
 int			ft_atoi(const char *nptr);
 t_guest		*ft_lstlast(t_guest *lst);
 void		ft_lstadd_back(t_guest **lst, t_guest *new);
