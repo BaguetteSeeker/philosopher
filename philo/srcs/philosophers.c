@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 21:25:35 by epinaud           #+#    #+#             */
-/*   Updated: 2025/07/01 21:16:54 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/07/05 21:23:01 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ t_dinner	*gset_dinner(void *g)
 	return (stored_g);
 }
 
-static t_guest	*create_philos(t_guest **head, t_dinner dinner)
+static void	create_philos(t_guest **head, t_dinner dinner)
 {
 	t_guest			*thinker;
 	size_t			i;
@@ -34,30 +34,15 @@ static t_guest	*create_philos(t_guest **head, t_dinner dinner)
 			put_err("Failled to malloc philosopher");
 		*thinker = (t_guest){0};
 		thinker->id = i;
-		if (pthread_mutex_init(&thinker->fork_mutex, NULL) != 0)
+		if (pthread_mutex_init(&thinker->fork_mutex, NULL) == 0)
+			thinker->status |= PHILO_MUTEX;
+		else
 			put_err("Failled to initialize mutex");
 		ft_lstadd_back(head, thinker);
 		i++;
 	}
 	thinker->next = *head;
-	return (*head);
-}
-
-static void	init_philo(t_guest **head, t_dinner dinner)
-{
-	t_guest			*thinker;
-	size_t			i;
-
-	thinker = create_philos(head, dinner);
-	gset_dinner(0)->start_time = time_since_epoch();
-	launch_dinner(*head, dinner);
-	i = 0;
-	while (i++ < dinner.guest_count)
-	{
-		pthread_join(thinker->thread, NULL);
-		thinker = thinker->next;
-	}
-	dinner.philos = thinker;
+	dinner.philos = *head;
 }
 
 int	main(int argc, char *argv[])
@@ -71,7 +56,7 @@ int	main(int argc, char *argv[])
 	set_table(argc, &argv[1]);
 	if (dinner.guest_count == 0)
 		put_err("There are no guest to your table..");
-	init_philo(&dinner.philos, dinner);
+	create_philos(&dinner.philos, dinner);
+	launch_dinner(dinner.philos, dinner);
 	cleanup_table(&dinner, dinner.philos);
-	pthread_mutex_destroy(&gset_dinner(0)->coordinator);
 }

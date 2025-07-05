@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 10:01:54 by epinaud           #+#    #+#             */
-/*   Updated: 2025/07/05 18:18:35 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/07/05 21:46:14 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,9 @@ static void	launch_philo_batch(t_guest *thinker, size_t batch_size)
 	while (i < batch_size)
 	{
 		thinker->last_meal = gset_dinner(0)->start_time;
-		if (pthread_create(&thinker->thread, NULL, launch_routine, thinker))
+		if (!pthread_create(&thinker->thread, NULL, launch_routine, thinker))
+			thinker->status |= PHILO_THREAD;
+		else
 			put_err("Failled to create thread");
 		thinker = thinker->next->next;
 		i += 2;
@@ -52,9 +54,12 @@ void	launch_dinner(t_guest *thinker, t_dinner dinner)
 	if (pthread_mutex_init(&dinner.coordinator, NULL) != 0
 		|| pthread_mutex_init(&dinner.display_lock, NULL) != 0)
 		put_err("Failled to initialize mutex");
+	gset_dinner(0)->start_time = time_since_epoch();
 	if (dinner.guest_count == 1)
 	{
-		if (pthread_create(&thinker->thread, NULL, dine_alone, thinker))
+		if (pthread_create(&thinker->thread, NULL, dine_alone, thinker) == 0)
+			thinker->status |= PHILO_THREAD;
+		else
 			put_err("Failled to create thread");
 		return ;
 	}
@@ -99,9 +104,19 @@ void	cleanup_table(t_dinner	*dinner, t_guest *philos)
 	i = 0;
 	while (i++ < dinner->guest_count)
 	{
+		if (philos->status & PHILO_THREAD)
+			pthread_join(philos->thread, NULL);
+		philos = philos->next;
+	}
+	i = 0;
+	while (i++ < dinner->guest_count)
+	{
 		next_philo = philos->next;
-		pthread_mutex_destroy(&philos->fork_mutex);
+		if (philos->status & PHILO_MUTEX)
+			pthread_mutex_destroy(&philos->fork_mutex);
 		free(philos);
 		philos = next_philo;
 	}
+	pthread_mutex_destroy(&gset_dinner(0)->coordinator);
+	pthread_mutex_destroy(&gset_dinner(0)->display_lock);
 }

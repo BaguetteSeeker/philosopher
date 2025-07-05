@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/11 21:47:23 by epinaud           #+#    #+#             */
-/*   Updated: 2025/07/05 18:18:12 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/07/05 21:46:53 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # define _DEFAULT_SOURCE
 # include <unistd.h>
 # include <stdbool.h>
+# include <stdint.h>
 # include <stdio.h>
 # include <stdlib.h>
 # include <pthread.h>
@@ -32,6 +33,13 @@ enum e_philo_state
 	DIED
 };
 
+enum e_philo_init
+{
+	PHILO_NONE = 0,
+	PHILO_MUTEX = 1 << 0,
+	PHILO_THREAD = 1 << 1
+};
+
 typedef struct s_guest
 {
 	void					*ptr;
@@ -41,6 +49,7 @@ typedef struct s_guest
 	pthread_mutex_t			fork_mutex;
 	size_t					last_meal;
 	size_t					times_eaten;
+	uint8_t					status;
 }	t_guest;
 
 typedef struct s_dinner

@@ -6,26 +6,19 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/15 18:37:41 by epinaud           #+#    #+#             */
-/*   Updated: 2025/07/01 21:22:11 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/07/05 21:25:03 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-void	ft_putstr_fd(char *s, int fd)
-{
-	if (!s)
-		return ;
-	while (*s)
-		write(fd, s++, 1);
-}
-
 void	put_err(char *msg)
 {
 	if (msg && *msg)
 	{
-		ft_putstr_fd(msg, STDERR_FILENO);
-		write(STDERR_FILENO, "\n", 1);
+		pthread_mutex_lock(&gset_dinner(0)->coordinator);
+		printf("%s\n", msg);
+		pthread_mutex_unlock(&gset_dinner(0)->coordinator);
 	}
 	cleanup_table(gset_dinner(0), gset_dinner(0)->philos);
 	exit(EXIT_FAILURE);
@@ -33,9 +26,10 @@ void	put_err(char *msg)
 
 void	lst_put(t_guest *lst)
 {
-	if (!lst)
-		return (ft_putstr_fd("Node does not exist\n", 1));
-	printf(" Philo Number [%ld]\n", lst->id);
+	if (lst)
+		printf(" Philo Number [%ld]\n", lst->id);
+	else
+		printf("Node does not exist\n");
 }
 
 void	display_state(t_guest *philo, size_t action)
