@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 10:01:54 by epinaud           #+#    #+#             */
-/*   Updated: 2025/07/06 14:30:03 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/07/06 16:47:15 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,15 +79,15 @@ void	set_table(int argc, char *args[])
 			if (!ft_isdigit(args[i][j++]))
 				put_err("Given parameter is not a number");
 		if (i == 0)
-			dinner->guest_count = ft_atoi(args[i]);
+			ft_atoi(args[i], (int *)&dinner->guest_count);
 		else if (i == 1)
-			dinner->life_duration = ft_atoi(args[i]);
+			ft_atoi(args[i], (int *)&dinner->life_duration);
 		else if (i == 2)
-			dinner->meal_duration = ft_atoi(args[i]);
+			ft_atoi(args[i], (int *)&dinner->meal_duration);
 		else if (i == 3)
-			dinner->sleep_duration = ft_atoi(args[i]);
+			ft_atoi(args[i], (int *)&dinner->sleep_duration);
 		else if (i == 4)
-			dinner->meals_required = ft_atoi(args[i]);
+			ft_atoi(args[i], (int *)&dinner->meals_required);
 		i++;
 		dinner->argc = argc;
 	}
@@ -99,14 +99,14 @@ void	cleanup_table(t_dinner	*dinner, t_guest *philos)
 	size_t			i;
 
 	i = 0;
-	while (i++ < dinner->guest_count)
+	while (philos && i++ < dinner->guest_count)
 	{
 		if (philos->status & PHILO_THREAD)
 			pthread_join(philos->thread, NULL);
 		philos = philos->next;
 	}
 	i = 0;
-	while (i++ < dinner->guest_count)
+	while (philos && i++ < dinner->guest_count)
 	{
 		next_philo = philos->next;
 		if (philos->status & PHILO_MUTEX)

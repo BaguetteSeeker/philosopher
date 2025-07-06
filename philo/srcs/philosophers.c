@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 21:25:35 by epinaud           #+#    #+#             */
-/*   Updated: 2025/07/05 22:12:45 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/07/06 16:49:49 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ t_dinner	*gset_dinner(void *g)
 	{
 		stored_g = g;
 		if (pthread_mutex_init(&stored_g->coordinator, NULL) != 0
-		|| pthread_mutex_init(&stored_g->display_lock, NULL) != 0)
+			|| pthread_mutex_init(&stored_g->display_lock, NULL) != 0)
 			put_err("Failled to initialize mutex");
 	}
 	return (stored_g);

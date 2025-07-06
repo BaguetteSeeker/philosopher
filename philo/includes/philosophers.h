@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/11 21:47:23 by epinaud           #+#    #+#             */
-/*   Updated: 2025/07/05 21:46:53 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/07/06 16:43:57 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,9 @@
 # define _DEFAULT_SOURCE
 # include <unistd.h>
 # include <stdbool.h>
+# include <string.h>
 # include <stdint.h>
+# include <limits.h>
 # include <stdio.h>
 # include <stdlib.h>
 # include <pthread.h>
@@ -87,7 +89,7 @@ void		lst_put(t_guest *lst);
 void		ft_putstr_fd(char *s, int fd);
 int			ft_isdigit(int c);
 int			ft_min(int a, int b);
-int			ft_atoi(const char *nptr);
+bool		ft_atoi(const char *nptr, int *sum);
 t_guest		*ft_lstlast(t_guest *lst);
 void		ft_lstadd_back(t_guest **lst, t_guest *new);
 char		*ft_strchr(const char *s, int c);
