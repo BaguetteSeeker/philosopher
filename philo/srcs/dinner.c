@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 10:01:54 by epinaud           #+#    #+#             */
-/*   Updated: 2025/07/05 21:46:14 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/07/06 14:30:03 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,9 +51,6 @@ void	launch_dinner(t_guest *thinker, t_dinner dinner)
 	t_guest	*even_thinkers;
 
 	even_thinkers = thinker->next;
-	if (pthread_mutex_init(&dinner.coordinator, NULL) != 0
-		|| pthread_mutex_init(&dinner.display_lock, NULL) != 0)
-		put_err("Failled to initialize mutex");
 	gset_dinner(0)->start_time = time_since_epoch();
 	if (dinner.guest_count == 1)
 	{

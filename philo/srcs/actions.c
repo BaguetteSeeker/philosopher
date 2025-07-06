@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/14 15:19:30 by epinaud           #+#    #+#             */
-/*   Updated: 2025/07/04 22:46:01 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/07/05 21:57:02 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,13 @@ void	*dine_alone(void *philo)
 {
 	pthread_mutex_lock(&((t_guest *)philo)->fork_mutex);
 	display_state(philo, PICKING_FORK);
-	usleep(gset_dinner(0)->life_duration / 0.001);
+	usleep(gset_dinner(0)->life_duration * 1000);
 	display_state((t_guest *)philo, DIED);
 	pthread_mutex_unlock(&((t_guest *)philo)->fork_mutex);
 	return (NULL);
 }
 
-void	think(t_guest *philo, bool silent)
+static void	think(t_guest *philo, bool silent)
 {
 	long	time_to_think;
 

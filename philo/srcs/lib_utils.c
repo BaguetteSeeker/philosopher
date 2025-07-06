@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/14 17:01:27 by epinaud           #+#    #+#             */
-/*   Updated: 2025/07/05 14:48:06 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/07/05 21:46:37 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ int	ft_atoi(const char *nptr)
 	sum = 0;
 	sign = 1;
 	while (nptr[i] == ' ' || nptr[i] == '\t' || nptr[i] == '\n'
-			|| nptr[i] == '\v' || nptr[i] == '\f' || nptr[i] == '\r')
+		|| nptr[i] == '\v' || nptr[i] == '\f' || nptr[i] == '\r')
 		i++;
 	if (nptr[i] == '+' || nptr[i] == '-')
 	{
@@ -73,17 +73,4 @@ void	ft_lstadd_back(t_guest **lst, t_guest *new)
 		return ;
 	}
 	ft_lstlast(*lst)->next = new;
-}
-
-char	*ft_strchr(const char *s, int c)
-{
-	while (*s)
-	{
-		if (*s == (char)c)
-			return ((char *)s);
-		s++;
-	}
-	if (*s == (char)c)
-		return ((char *)s);
-	return (0);
 }
