@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/14 15:19:30 by epinaud           #+#    #+#             */
-/*   Updated: 2025/07/05 21:57:02 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/07/06 17:16:23 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,13 +67,11 @@ static bool	lift_forks(t_guest *philo)
 	return (1);
 }
 
-static size_t	eat(t_guest *philo)
+static size_t	eat(t_guest *philo, t_dinner *table)
 {
-	t_dinner		*table;
 	pthread_mutex_t	*st_fork;
 	pthread_mutex_t	*nd_fork;
 
-	table = gset_dinner(0);
 	if (philo->id % 2 == 0)
 	{
 		st_fork = &philo->fork_mutex;
@@ -84,12 +82,15 @@ static size_t	eat(t_guest *philo)
 		st_fork = &philo->next->fork_mutex;
 		nd_fork = &philo->fork_mutex;
 	}
-	if (!lift_forks(philo) || is_dinner_done())
+	if (!lift_forks(philo))
 		return (0);
-	philo->last_meal = time_since_epoch();
-	philo->times_eaten++;
-	display_state(philo, EATING);
-	ft_usleep(table->meal_duration, philo);
+	if (!is_dinner_done())
+	{
+		philo->last_meal = time_since_epoch();
+		philo->times_eaten++;
+		display_state(philo, EATING);
+		ft_usleep(table->meal_duration, philo);
+	}
 	pthread_mutex_unlock(st_fork);
 	pthread_mutex_unlock(nd_fork);
 	return (1);
@@ -108,7 +109,7 @@ void	*launch_routine(void *v_philo)
 			&& philo->times_eaten >= table->meals_required)
 			break ;
 		check_death(philo);
-		if (is_dinner_done() || !eat(philo) || is_dinner_done())
+		if (is_dinner_done() || !eat(philo, table) || is_dinner_done())
 			break ;
 		display_state(philo, SLEEPING);
 		ft_usleep(table->sleep_duration, philo);
